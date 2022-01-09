@@ -56,7 +56,7 @@ const useWorkout = () => {
             setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
         },
         resetWorkout: function () {
-            setWorkout({ ...workout, inProgress: false, currentPhase: INACTIVE })
+            setWorkout({ ...workout, inProgress: false, currentTime: workout.roundTime, currentRound: 1, currentPhase: INACTIVE })
         },
         changeOptions: function (optionName, value) {
             setWorkout({ ...workout, [optionName]: value })
