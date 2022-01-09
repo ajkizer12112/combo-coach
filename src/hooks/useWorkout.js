@@ -12,8 +12,8 @@ const useWorkout = () => {
 
     const [workout, setWorkout] = useState({
         currentPhase: INACTIVE,
-        currentRound: 1,
-        totalRounds: 12,
+        currentRound: 0,
+        totalRounds: 3,
         roundTime: 180,
         currentTime: 180,
         roundWarningInterval: 60,
@@ -27,22 +27,36 @@ const useWorkout = () => {
 
     const workoutActions = {
         startWorkout: function () {
-            setWorkout({ ...workout, currentPhase: COUNTDOWN, currentRound: 1, currentTime: workout.restTime, isComplete: false, inProgress: true, timerActive: true, });
+            setWorkout({ ...workout, currentPhase: COUNTDOWN, currentRound: 1, currentTime: workout.countDown, isComplete: false, inProgress: true, timerActive: true, });
         },
         decrementTimer: function () {
             setWorkout({ ...workout, currentTime: workout.currentTime - 1 })
         },
+        endCountdown: function () {
+            setWorkout({ ...workout, currentTime: workout.roundTime, currentPhase: WORK })
+        },
+        runZero: function () {
+            if (workout.currentRound >= workout.totalRounds) {
+                this.completeWorkout();
+            }
+            else if (workout.currentPhase === "REST") this.changeRound();
+            else if (workout.currentPhase === "COUNTDOWN") this.endCountdown();
+            else if (workout.currentPhase === "WORK") this.startRest();
+
+        },
         startRest: function () {
-            setWorkout({ ...workout, currentTime: workout.restTime })
+            console.log("fire rest")
+            setWorkout({ ...workout, currentTime: workout.restTime, currentPhase: REST })
         },
         changeRound: function () {
-            setWorkout({ ...workout, currentPhase: WORK, currentRound: workout.currentRound + 1 })
+            console.log("fire")
+            setWorkout({ ...workout, currentPhase: WORK, currentTime: workout.roundTime, currentRound: workout.currentRound + 1 })
         },
         completeWorkout: function () {
-            setWorkout({ ...workout, inProgress: false, isComplete: true })
+            setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
         },
         resetWorkout: function () {
-            setWorkout({ ...workout, inProgress: false })
+            setWorkout({ ...workout, inProgress: false, currentPhase: INACTIVE })
         },
         changeOptions: function (optionName, value) {
             setWorkout({ ...workout, [optionName]: value })
