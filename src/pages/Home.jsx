@@ -23,7 +23,10 @@ const Home = () => {
             <p className="is-size-2">Round: {workout.currentRound}</p>
             {workout.currentPhase}
             {workout.currentTime}
-            <button className="button" onClick={workoutActions.startWorkout}>Start</button>
+            <button className="button" disabled={workout.inProgress} onClick={workoutActions.startWorkout}>Start Workout</button>
+            <br />
+            <button disabled={!workout.inProgress} className="button" onClick={workoutActions.startTimer}>Play</button>
+            <button disabled={!workout.inProgress} className="button" onClick={workoutActions.pauseTimer}>Pause</button>
         </div>
     )
 }

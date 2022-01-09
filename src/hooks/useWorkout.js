@@ -26,6 +26,7 @@ const useWorkout = () => {
     })
 
     const workoutActions = {
+
         startWorkout: function () {
             setWorkout({ ...workout, currentPhase: COUNTDOWN, currentRound: 1, currentTime: workout.countDown, isComplete: false, inProgress: true, timerActive: true, });
         },
@@ -42,7 +43,6 @@ const useWorkout = () => {
             else if (workout.currentPhase === "REST") this.changeRound();
             else if (workout.currentPhase === "COUNTDOWN") this.endCountdown();
             else if (workout.currentPhase === "WORK") this.startRest();
-
         },
         startRest: function () {
             console.log("fire rest")
