@@ -7,7 +7,7 @@ const initialState = {
 
 const useDropdown = () => {
     const [dropdown, setDropdown] = useState({
-        showRound: false
+        totalRounds: false
     })
 
 
@@ -25,7 +25,7 @@ const useDropdown = () => {
             })
 
             if (hasOpen) setDropdown(initialState)
-        }
+        },
     }
 
     return { dropdown, dropdownActions }
