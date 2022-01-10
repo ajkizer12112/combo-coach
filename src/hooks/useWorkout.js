@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-
+import bellSound from "../utils/sounds/boxing-bell.mp3"
+import warningSound from '../utils/sounds/boxing-hit.wav'
 const useWorkout = () => {
     const workoutStates = {
         INACTIVE: "INACTIVE",
@@ -16,7 +17,7 @@ const useWorkout = () => {
         totalRounds: 3,
         roundTime: 180,
         currentTime: 180,
-        roundWarningInterval: 60,
+        roundWarningInterval: 5,
         restTime: 60,
         countDown: 10,
         roundChangeWarning: 10,
@@ -25,19 +26,38 @@ const useWorkout = () => {
         inProgress: false,
     })
 
+    const bell = new Audio(bellSound);
+    const warning = new Audio(warningSound);
+
+    bell.playbackRate = 1.25;
+    warning.playbackRate = 5;
+    warning.loop = true;
+
+
+    const playBell = (rate) => {
+        bell.playbackRate = rate;
+        bell.play();
+    }
+
+
     useEffect(() => {
         setWorkout({ ...workout, currentTime: workout.roundTime })
     }, [workout.roundTime])
 
     const workoutActions = {
-
         startWorkout: function () {
             setWorkout({ ...workout, currentPhase: COUNTDOWN, currentRound: 1, currentTime: workout.countDown, isComplete: false, inProgress: true, timerActive: true, });
+        },
+        playWarning: function () {
+            warning.play();
+            console.log("hello")
+            setTimeout(() => warning.loop = false, 800)
         },
         decrementTimer: function () {
             setWorkout({ ...workout, currentTime: workout.currentTime - 1 })
         },
         endCountdown: function () {
+            playBell(1.25)
             setWorkout({ ...workout, currentTime: workout.roundTime, currentPhase: WORK })
         },
         runZero: function () {
@@ -49,14 +69,16 @@ const useWorkout = () => {
             else if (workout.currentPhase === "WORK") this.startRest();
         },
         startRest: function () {
-            console.log("fire rest")
+            playBell(0.9);
             setWorkout({ ...workout, currentTime: workout.restTime, currentPhase: REST })
         },
         changeRound: function () {
             console.log("fire")
+            playBell(1.25);
             setWorkout({ ...workout, currentPhase: WORK, currentTime: workout.roundTime, currentRound: workout.currentRound + 1 })
         },
         completeWorkout: function () {
+            playBell(0.9);
             setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
         },
         resetWorkout: function () {

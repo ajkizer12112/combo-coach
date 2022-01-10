@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 
 
 const initialState = {
-    showRound: false
+    totalRounds: false,
+    restTime: false,
+    roundTime: false,
+    countDown: false,
+    roundWarningInterval: false,
 }
 
 const useDropdown = () => {
@@ -10,10 +14,12 @@ const useDropdown = () => {
         totalRounds: false,
         restTime: false,
         roundTime: false,
-        countDown: false
+        countDown: false,
+        roundWarningInterval: false,
     })
 
 
+    console.log(dropdown)
     const dropdownActions = {
         toggle: function (option, value) {
             setDropdown({ ...dropdown, [option]: value })

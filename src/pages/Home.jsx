@@ -9,6 +9,11 @@ const Home = () => {
 
     useEffect(() => {
         let timerId;
+        const timePassed = workout.roundTime - workout.currentTime
+
+        if (timePassed % workout.roundWarningInterval === 0 && timePassed !== 0) {
+            workoutActions.playWarning();
+        }
 
         if (workout.timerActive) {
             if (workout.currentTime === 0) {
@@ -34,6 +39,7 @@ const Home = () => {
     const restTimes = [30, 45, 60, 90, 120];
     const roundTimes = [60, 90, 120, 180, 300];
     const countDownTimes = [5, 10, 15, 30, 45, 60];
+    const roundWarningTimes = [30, 60, 90, 120];
 
     const dropdowns = [
         {
@@ -55,6 +61,11 @@ const Home = () => {
             title: "Countdown",
             items: countDownTimes,
             dropdownOption: "countDown"
+        },
+        {
+            title: "Round Warning Inverval",
+            items: roundWarningTimes,
+            dropdownOption: "roundWarningInterval"
         }
     ]
 
