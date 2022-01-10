@@ -31,7 +31,7 @@ const Home = () => {
 
     const rounds = [3, 4, 6, 8, 10, 12, 15, 20, 100]
     return (
-        <div className="section columns is-multiline" onClick={() => dropdown.showRound && dropdownActions.toggle("showRound", false)}>
+        <div className="section columns is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
             <div className={`dropdown ${dropdown.showRound ? "is-active" : ""}`}>
                 <div className="dropdown-trigger" onClick={() => dropdownActions.toggle("showRound", true)}>
                     <button className="button" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -47,9 +47,6 @@ const Home = () => {
                         {rounds.map(round => <a onClick={() => workoutActions.changeOptions("totalRounds", round)} key={`${round}-dropdown`} href="#" className="dropdown-item">
                             {round}
                         </a>)}
-
-
-
 
                     </div>
                 </div>
