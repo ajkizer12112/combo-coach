@@ -11,7 +11,7 @@ const Dropdown = ({ menuAttr }) => {
         <div className={`dropdown ${dropdown[dropdownOption] ? "is-active" : ""}`}>
             <div className="dropdown-trigger" onClick={() => dropdownActions.toggle(dropdownOption, true)}>
                 <button className="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                    <span>Number of Rounds: {workout.totalRounds}</span>
+                    <span>{title}: {workout[dropdownOption]}</span>
                     <span className="icon is-small">
                         <i className="fas fa-angle-down" aria-hidden="true"></i>
                     </span>

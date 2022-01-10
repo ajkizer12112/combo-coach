@@ -30,10 +30,38 @@ const Home = () => {
         return `${minutes}:${seconds}`
     }
 
-    const rounds = [3, 4, 6, 8, 10, 12, 15, 20, 100]
+    const rounds = [3, 4, 6, 8, 10, 12, 15, 20, 100];
+    const restTimes = [30, 45, 60, 90, 120];
+    const roundTimes = [60, 90, 120, 180, 300];
+    const countDownTimes = [5, 10, 15, 30, 45, 60];
+
+    const dropdowns = [
+        {
+            title: "Number of Rounds",
+            items: rounds,
+            dropdownOption: "totalRounds"
+        },
+        {
+            title: "Rest Time",
+            items: restTimes,
+            dropdownOption: "restTime"
+        },
+        {
+            title: "Time in Round",
+            items: roundTimes,
+            dropdownOption: "roundTime"
+        },
+        {
+            title: "Countdown",
+            items: countDownTimes,
+            dropdownOption: "countDown"
+        }
+    ]
+
     return (
         <div className="section columns is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
-            <Dropdown menuAttr={{ title: "Number of Rounds", items: rounds, dropdownOption: "totalRounds" }} />
+            {dropdowns.map((item) => <Dropdown key={item.title} menuAttr={item} />)}
+
             {workout.isComplete && <p>GRATS!</p>}
             <div className="column is-12">
                 <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds}</p>

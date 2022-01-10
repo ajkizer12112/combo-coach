@@ -7,7 +7,10 @@ const initialState = {
 
 const useDropdown = () => {
     const [dropdown, setDropdown] = useState({
-        totalRounds: false
+        totalRounds: false,
+        restTime: false,
+        roundTime: false,
+        countDown: false
     })
 
 

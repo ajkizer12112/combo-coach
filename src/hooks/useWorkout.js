@@ -12,7 +12,7 @@ const useWorkout = () => {
 
     const [workout, setWorkout] = useState({
         currentPhase: INACTIVE,
-        currentRound: 0,
+        currentRound: 1,
         totalRounds: 3,
         roundTime: 180,
         currentTime: 180,
@@ -24,6 +24,10 @@ const useWorkout = () => {
         isComplete: false,
         inProgress: false,
     })
+
+    useEffect(() => {
+        setWorkout({ ...workout, currentTime: workout.roundTime })
+    }, [workout.roundTime])
 
     const workoutActions = {
 
@@ -59,7 +63,7 @@ const useWorkout = () => {
             setWorkout({ ...workout, inProgress: false, currentTime: workout.roundTime, currentRound: 1, currentPhase: INACTIVE })
         },
         changeOptions: function (optionName, value) {
-            setWorkout({ ...workout, [optionName]: value })
+            setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
         },
         pauseTimer: function () {
             setWorkout({ ...workout, timerActive: false })
