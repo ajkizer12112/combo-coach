@@ -73,6 +73,16 @@ const useWorkout = () => {
             playBell(1.25)
             setWorkout({ ...workout, currentTime: workout.roundTime, currentPhase: WORK })
         },
+        runWarningChecks: function () {
+            const timePassed = workout.roundTime - workout.currentTime
+            if (workout.currentPhase === "WORK" && timePassed % workout.roundWarningInterval === 0 && timePassed !== 0) {
+                workoutActions.playWarning();
+            }
+
+            if (workout.currentPhase === "REST" && workout.currentTime === 10) {
+                workoutActions.playWarning();
+            }
+        },
         runZero: function () {
             if (workout.currentRound >= workout.totalRounds) {
                 this.completeWorkout();

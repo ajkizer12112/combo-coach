@@ -11,16 +11,8 @@ const Home = () => {
 
     useEffect(() => {
         let timerId;
-        const timePassed = workout.roundTime - workout.currentTime
 
-        if (workout.currentPhase === "WORK" && timePassed % workout.roundWarningInterval === 0 && timePassed !== 0) {
-            workoutActions.playWarning();
-        }
-
-        if (workout.currentPhase === "REST" && workout.currentTime === 10) {
-            workoutActions.playWarning();
-        }
-
+        workoutActions.runWarningChecks();
         if (workout.timerActive) {
             if (workout.currentTime === 0) {
                 workoutActions.runZero();
@@ -72,14 +64,11 @@ const Home = () => {
 
     return (
         <div className="section has-background-dark columns is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
-            <div className="column has-background-grey-dark is-centered has-text-centered has-text-light columns is-multiline is-6 is-circle">
+            <div className="column has-background-grey-dark is-centered has-text-centered has-text-light columns is-multiline is-mobile is-6 is-circle">
                 <div className={`has-background-danger light ${workout.inProgress && workout.currentPhase === "REST" ? "light-active" : ""}`}></div>
-                <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase !== "WORK" ? "light-active" : ""}`}></div>
+                <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
                 <div className="column is-12">
                     <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds === Infinity ? "∞" : workout.totalRounds}</p>
-                </div>
-                <div className="column is-12">
-                    <p className="is-size-5">{workout.currentPhase}</p>
                 </div>
                 <div className="column is-12">
                     <p className="is-size-2">
@@ -87,7 +76,6 @@ const Home = () => {
                     </p>
                 </div>
                 <div className="column columns is-centered is-12 is-multiline">
-
                     {workout.inProgress && workout.timerActive ? <button className="button" onClick={workoutActions.pauseTimer}>Pause</button> : workout.inProgress ? <button className="button" onClick={workoutActions.startTimer}>Play</button> : <button className="button" onClick={workoutActions.startWorkout}>Start</button>}
 
                     <button onClick={workoutActions.resetWorkout} disabled={workout.inProgress && workout.timerActive} className="button">Reset</button>

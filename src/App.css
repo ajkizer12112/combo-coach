@@ -13,3 +13,8 @@
 .light-active {
     opacity: 1
 }
+
+.section {
+    min-height: 100vh;
+    margin: 0;
+}
