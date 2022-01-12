@@ -17,6 +17,10 @@ const Home = () => {
             workoutActions.playWarning();
         }
 
+        if (workout.currentPhase === "REST" && workout.currentTime === 10) {
+            workoutActions.playWarning();
+        }
+
         if (workout.timerActive) {
             if (workout.currentTime === 0) {
                 workoutActions.runZero();
