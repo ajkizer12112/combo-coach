@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { WorkoutContext } from '../context/WorkoutContext'
 import { DropdownContext } from '../context/DropdownContext'
 import Dropdown from '../components/Dropdown'
+import Options from '../components/sections/Options'
+
 
 const Home = () => {
     const { workout, workoutActions } = useContext(WorkoutContext)
@@ -11,7 +13,7 @@ const Home = () => {
         let timerId;
         const timePassed = workout.roundTime - workout.currentTime
 
-        if (timePassed % workout.roundWarningInterval === 0 && timePassed !== 0) {
+        if (workout.currentPhase === "WORK" && timePassed % workout.roundWarningInterval === 0 && timePassed !== 0) {
             workoutActions.playWarning();
         }
 
@@ -27,19 +29,13 @@ const Home = () => {
         }
     }, [workout])
 
-    const convertToTime = (time) => {
-        const minutes = Math.floor(time / 60)
-        let seconds = workout.currentTime - minutes * 60
-        if (seconds < 10) seconds = `0${seconds}`
 
-        return `${minutes}:${seconds}`
-    }
 
-    const rounds = [3, 4, 6, 8, 10, 12, 15, 20, 100];
+    const rounds = [3, 4, 6, 8, 10, 12, 15, 20, Infinity];
     const restTimes = [30, 45, 60, 90, 120];
     const roundTimes = [60, 90, 120, 180, 300];
-    const countDownTimes = [5, 10, 15, 30, 45, 60];
-    const roundWarningTimes = [30, 60, 90, 120];
+    const countDownTimes = [5, 10, 15, 30, 45, 60, 120];
+    const roundWarningTimes = [10, 30, 60];
 
     const dropdowns = [
         {
@@ -69,27 +65,33 @@ const Home = () => {
         }
     ]
 
-    return (
-        <div className="section columns is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
-            {dropdowns.map((item) => <Dropdown key={item.title} menuAttr={item} />)}
 
-            {workout.isComplete && <p>GRATS!</p>}
-            <div className="column is-12">
-                <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds}</p>
+    return (
+        <div className="section has-background-dark columns is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
+            <div className="column has-background-grey-dark is-centered has-text-centered has-text-light columns is-multiline is-6 is-circle">
+                <div className={`has-background-danger light ${workout.inProgress && workout.currentPhase === "REST" ? "light-active" : ""}`}></div>
+                <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase !== "WORK" ? "light-active" : ""}`}></div>
+                <div className="column is-12">
+                    <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds === Infinity ? "∞" : workout.totalRounds}</p>
+                </div>
+                <div className="column is-12">
+                    <p className="is-size-5">{workout.currentPhase}</p>
+                </div>
+                <div className="column is-12">
+                    <p className="is-size-2">
+                        {workoutActions.convertToTime(workout.currentTime)}
+                    </p>
+                </div>
+                <div className="column columns is-centered is-12 is-multiline">
+
+                    {workout.inProgress && workout.timerActive ? <button className="button" onClick={workoutActions.pauseTimer}>Pause</button> : workout.inProgress ? <button className="button" onClick={workoutActions.startTimer}>Play</button> : <button className="button" onClick={workoutActions.startWorkout}>Start</button>}
+
+                    <button onClick={workoutActions.resetWorkout} disabled={workout.inProgress && workout.timerActive} className="button">Reset</button>
+
+                </div>
             </div>
-            <div className="column is-12">
-                <p className="is-size-5">{workout.currentPhase}</p>
-            </div>
-            <div className="column is-12">
-                <p className="is-size-2">
-                    {convertToTime(workout.currentTime)}
-                </p>
-            </div>
-            <button className="button" disabled={workout.inProgress} onClick={workoutActions.startWorkout}>Start Workout</button>
-            <br />
-            <button disabled={!workout.inProgress} className="button" onClick={workoutActions.startTimer}>Play</button>
-            <button disabled={!workout.inProgress} className="button" onClick={workoutActions.pauseTimer}>Pause</button>
-            <button onClick={workoutActions.resetWorkout} disabled={workout.inProgress && workout.timerActive} className="button">Reset</button>
+            <Options dropdowns={dropdowns} />
+
         </div >
     )
 }

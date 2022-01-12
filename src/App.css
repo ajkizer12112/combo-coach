@@ -1,1 +1,15 @@
-@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
+
+.is-circle {
+    border-radius: 20px;
+}
+
+.light {
+    width: 40%;
+    height: 50px;
+    opacity: .5;
+}
+
+.light-active {
+    opacity: 1
+}

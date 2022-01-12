@@ -1,30 +1,36 @@
 import React, { useState, useEffect } from 'react'
 import bellSound from "../utils/sounds/boxing-bell.mp3"
 import warningSound from '../utils/sounds/boxing-hit.wav'
+
+
+
+const workoutStates = {
+    INACTIVE: "INACTIVE",
+    WORK: "WORK",
+    REST: "REST",
+    COUNTDOWN: "COUNTDOWN"
+}
+
+const { INACTIVE, WORK, COUNTDOWN, REST } = workoutStates;
+
+const initialState = {
+    currentPhase: INACTIVE,
+    currentRound: 1,
+    totalRounds: 3,
+    roundTime: 180,
+    currentTime: 180,
+    roundWarningInterval: 5,
+    restTime: 60,
+    countDown: 10,
+    roundChangeWarning: 10,
+    timerActive: false,
+    isComplete: false,
+    inProgress: false,
+}
+
+
 const useWorkout = () => {
-    const workoutStates = {
-        INACTIVE: "INACTIVE",
-        WORK: "WORK",
-        REST: "REST",
-        COUNTDOWN: "COUNTDOWN"
-    }
-
-    const { INACTIVE, WORK, COUNTDOWN, REST } = workoutStates;
-
-    const [workout, setWorkout] = useState({
-        currentPhase: INACTIVE,
-        currentRound: 1,
-        totalRounds: 3,
-        roundTime: 180,
-        currentTime: 180,
-        roundWarningInterval: 5,
-        restTime: 60,
-        countDown: 10,
-        roundChangeWarning: 10,
-        timerActive: false,
-        isComplete: false,
-        inProgress: false,
-    })
+    const [workout, setWorkout] = useState(initialState)
 
     const bell = new Audio(bellSound);
     const warning = new Audio(warningSound);
@@ -45,6 +51,13 @@ const useWorkout = () => {
     }, [workout.roundTime])
 
     const workoutActions = {
+        convertToTime: function (time) {
+            const minutes = Math.floor(time / 60)
+            let seconds = time - minutes * 60
+            if (seconds < 10) seconds = `0${seconds}`
+
+            return `${minutes}:${seconds}`
+        },
         startWorkout: function () {
             setWorkout({ ...workout, currentPhase: COUNTDOWN, currentRound: 1, currentTime: workout.countDown, isComplete: false, inProgress: true, timerActive: true, });
         },
@@ -82,7 +95,7 @@ const useWorkout = () => {
             setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
         },
         resetWorkout: function () {
-            setWorkout({ ...workout, inProgress: false, currentTime: workout.roundTime, currentRound: 1, currentPhase: INACTIVE })
+            setWorkout(initialState)
         },
         changeOptions: function (optionName, value) {
             setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })

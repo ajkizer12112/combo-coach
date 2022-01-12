@@ -8,10 +8,10 @@ const Dropdown = ({ menuAttr }) => {
     const { title, items, dropdownOption } = menuAttr;
 
     return (
-        <div className={`dropdown ${dropdown[dropdownOption] ? "is-active" : ""}`}>
+        <div className={`dropdown column is-6 ${dropdown[dropdownOption] ? "is-active" : ""}`}>
             <div className="dropdown-trigger" onClick={() => dropdownActions.toggle(dropdownOption, true)}>
                 <button className="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                    <span>{title}: {workout[dropdownOption]}</span>
+                    <span>{title}: {dropdownOption === "totalRounds" ? workout[dropdownOption] : workoutActions.convertToTime(workout[dropdownOption])}</span>
                     <span className="icon is-small">
                         <i className="fas fa-angle-down" aria-hidden="true"></i>
                     </span>
@@ -21,7 +21,7 @@ const Dropdown = ({ menuAttr }) => {
                 <div className="dropdown-content">
 
                     {items.map(item => <a onClick={() => workoutActions.changeOptions(dropdownOption, item)} key={`${item}-dropdown-${title}`} href="#" className="dropdown-item">
-                        {item}
+                        {dropdownOption === "totalRounds" ? item === Infinity ? "Unlimited" : item : workoutActions.convertToTime(item)}
                     </a>)}
 
                 </div>
