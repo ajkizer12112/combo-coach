@@ -19,7 +19,7 @@ const initialState = {
     totalRounds: 3,
     roundTime: 180,
     currentTime: 180,
-    roundWarningInterval: 5,
+    roundWarningInterval: 10,
     restTime: 60,
     countDown: 10,
     roundChangeWarning: 10,
@@ -40,81 +40,84 @@ const useWorkout = () => {
     warning.loop = true;
 
 
-    const playBell = (rate) => {
-        bell.playbackRate = rate;
-        bell.play();
-    }
-
-
     useEffect(() => {
         setWorkout({ ...workout, currentTime: workout.roundTime })
     }, [workout.roundTime])
 
     const workoutActions = {
-        convertToTime: function (time) {
-            const minutes = Math.floor(time / 60)
-            let seconds = time - minutes * 60
-            if (seconds < 10) seconds = `0${seconds}`
+        timer: {
+            convertToTime: function (time) {
+                const minutes = Math.floor(time / 60)
+                let seconds = time - minutes * 60
+                if (seconds < 10) seconds = `0${seconds}`
 
-            return `${minutes}:${seconds}`
-        },
-        startWorkout: function () {
-            setWorkout({ ...workout, currentPhase: COUNTDOWN, currentRound: 1, currentTime: workout.countDown, isComplete: false, inProgress: true, timerActive: true, });
-        },
-        playWarning: function () {
-            warning.play();
-            console.log("hello")
-            setTimeout(() => warning.loop = false, 800)
-        },
-        decrementTimer: function () {
-            setWorkout({ ...workout, currentTime: workout.currentTime - 1 })
-        },
-        endCountdown: function () {
-            playBell(1.25)
-            setWorkout({ ...workout, currentTime: workout.roundTime, currentPhase: WORK })
-        },
-        runWarningChecks: function () {
-            const timePassed = workout.roundTime - workout.currentTime
-            if (workout.currentPhase === "WORK" && timePassed % workout.roundWarningInterval === 0 && timePassed !== 0) {
-                workoutActions.playWarning();
-            }
+                return `${minutes}:${seconds}`
+            },
+            pauseTimer: function () {
+                setWorkout({ ...workout, timerActive: false })
+            },
+            startTimer: function () {
+                setWorkout({ ...workout, timerActive: true })
+            },
+            decrementTimer: function () {
+                setWorkout({ ...workout, currentTime: workout.currentTime - 1 })
+            },
+            runZero: function () {
+                if (workout.currentRound >= workout.totalRounds) {
+                    workoutActions.workoutFns.completeWorkout();
+                }
+                else if (workout.currentPhase === "REST") workoutActions.workoutFns.changeRound();
+                else if (workout.currentPhase === "COUNTDOWN") workoutActions.workoutFns.endCountdown();
+                else if (workout.currentPhase === "WORK") workoutActions.workoutFns.startRest();
+            },
+            runWarningChecks: function () {
+                const timePassed = workout.roundTime - workout.currentTime
+                if (workout.currentPhase === "WORK" && timePassed % workout.roundWarningInterval === 0 && timePassed !== 0) {
+                    workoutActions.sounds.playWarning();
+                }
 
-            if (workout.currentPhase === "REST" && workout.currentTime === 10) {
-                workoutActions.playWarning();
-            }
+                if (workout.currentPhase === "REST" && workout.currentTime === 10) {
+                    workoutActions.sounds.playWarning();
+                }
+            },
         },
-        runZero: function () {
-            if (workout.currentRound >= workout.totalRounds) {
-                this.completeWorkout();
-            }
-            else if (workout.currentPhase === "REST") this.changeRound();
-            else if (workout.currentPhase === "COUNTDOWN") this.endCountdown();
-            else if (workout.currentPhase === "WORK") this.startRest();
+        workoutFns: {
+            startWorkout: function () {
+                setWorkout({ ...workout, currentPhase: COUNTDOWN, currentRound: 1, currentTime: workout.countDown, isComplete: false, inProgress: true, timerActive: true, });
+            },
+            endCountdown: function () {
+                workoutActions.sounds.playBell(1.25)
+                setWorkout({ ...workout, currentTime: workout.roundTime, currentPhase: WORK })
+            },
+            startRest: function () {
+                workoutActions.sounds.playBell(0.9);
+                setWorkout({ ...workout, currentTime: workout.restTime, currentPhase: REST })
+            },
+            changeRound: function () {
+                console.log("fire")
+                workoutActions.sounds.playBell(1.25);
+                setWorkout({ ...workout, currentPhase: WORK, currentTime: workout.roundTime, currentRound: workout.currentRound + 1 })
+            },
+            completeWorkout: function () {
+                workoutActions.sounds.playBell(0.9);
+                setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
+            },
+            resetWorkout: function () {
+                setWorkout(initialState)
+            },
+            changeOptions: function (optionName, value) {
+                setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
+            },
         },
-        startRest: function () {
-            playBell(0.9);
-            setWorkout({ ...workout, currentTime: workout.restTime, currentPhase: REST })
-        },
-        changeRound: function () {
-            console.log("fire")
-            playBell(1.25);
-            setWorkout({ ...workout, currentPhase: WORK, currentTime: workout.roundTime, currentRound: workout.currentRound + 1 })
-        },
-        completeWorkout: function () {
-            playBell(0.9);
-            setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
-        },
-        resetWorkout: function () {
-            setWorkout(initialState)
-        },
-        changeOptions: function (optionName, value) {
-            setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
-        },
-        pauseTimer: function () {
-            setWorkout({ ...workout, timerActive: false })
-        },
-        startTimer: function () {
-            setWorkout({ ...workout, timerActive: true })
+        sounds: {
+            playWarning: function () {
+                warning.play();
+                setTimeout(() => warning.loop = false, 800)
+            },
+            playBell: function (rate) {
+                bell.playbackRate = rate;
+                bell.play();
+            },
         },
     }
 

@@ -6,19 +6,19 @@ import Options from '../components/sections/Options'
 
 
 const Home = () => {
-    const { workout, workoutActions } = useContext(WorkoutContext)
+    const { workout, workoutActions: { timer, workoutFns, sounds } } = useContext(WorkoutContext)
     const { dropdown, dropdownActions } = useContext(DropdownContext)
 
     useEffect(() => {
         let timerId;
 
-        workoutActions.runWarningChecks();
+        timer.runWarningChecks();
         if (workout.timerActive) {
             if (workout.currentTime === 0) {
-                workoutActions.runZero();
+                timer.runZero();
             }
-            const timer = () => setTimeout(() => workoutActions.decrementTimer(), 1000);
-            timerId = timer();
+            const timeout = () => setTimeout(() => timer.decrementTimer(), 10);
+            timerId = timeout();
         }
         return () => {
             clearTimeout(timerId)
@@ -27,10 +27,10 @@ const Home = () => {
 
 
 
-    const rounds = [3, 4, 6, 8, 10, 12, 15, 20, Infinity];
+    const rounds = [3, 4, 6, 8, 10, 12, 24, Infinity];
     const restTimes = [30, 45, 60, 90, 120];
-    const roundTimes = [60, 90, 120, 180, 300];
-    const countDownTimes = [5, 10, 15, 30, 45, 60, 120];
+    const roundTimes = [120, 180, 300];
+    const countDownTimes = [10, 30, 60];
     const roundWarningTimes = [10, 30, 60];
 
     const dropdowns = [
@@ -63,8 +63,8 @@ const Home = () => {
 
 
     return (
-        <div className="section has-background-dark columns is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
-            <div className="column has-background-grey-dark is-centered has-text-centered has-text-light columns is-multiline is-mobile is-6 is-circle">
+        <div className="section has-background-dark columns is-justify-content-center is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
+            <div className="column has-background-grey-dark is-align-items-center is-centered has-text-centered has-text-light columns is-multiline is-mobile is-6 is-circle">
                 <div className={`has-background-danger light ${workout.inProgress && workout.currentPhase === "REST" ? "light-active" : ""}`}></div>
                 <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
                 <div className="column is-12">
@@ -72,13 +72,13 @@ const Home = () => {
                 </div>
                 <div className="column is-12">
                     <p className="is-size-2">
-                        {workoutActions.convertToTime(workout.currentTime)}
+                        {timer.convertToTime(workout.currentTime)}
                     </p>
                 </div>
                 <div className="column columns is-centered is-12 is-multiline">
-                    {workout.inProgress && workout.timerActive ? <button className="button" onClick={workoutActions.pauseTimer}>Pause</button> : workout.inProgress ? <button className="button" onClick={workoutActions.startTimer}>Play</button> : <button className="button" onClick={workoutActions.startWorkout}>Start</button>}
+                    {workout.inProgress && workout.timerActive ? <button className="button" onClick={timer.pauseTimer}>Pause</button> : workout.inProgress ? <button className="button" onClick={timer.startTimer}>Play</button> : <button className="button" onClick={workoutFns.startWorkout}>Start</button>}
 
-                    <button onClick={workoutActions.resetWorkout} disabled={workout.inProgress && workout.timerActive} className="button">Reset</button>
+                    <button onClick={workoutFns.resetWorkout} disabled={workout.inProgress && workout.timerActive} className="button">Reset</button>
 
                 </div>
             </div>
