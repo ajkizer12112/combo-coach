@@ -29,6 +29,7 @@ const initialState = {
 }
 
 
+
 const useWorkout = () => {
     const [workout, setWorkout] = useState(initialState)
 
@@ -38,6 +39,8 @@ const useWorkout = () => {
     bell.playbackRate = 1.25;
     warning.playbackRate = 5;
     warning.loop = true;
+
+
 
 
     useEffect(() => {
@@ -94,7 +97,6 @@ const useWorkout = () => {
                 setWorkout({ ...workout, currentTime: workout.restTime, currentPhase: REST })
             },
             changeRound: function () {
-                console.log("fire")
                 workoutActions.sounds.playBell(1.25);
                 setWorkout({ ...workout, currentPhase: WORK, currentTime: workout.roundTime, currentRound: workout.currentRound + 1 })
             },
@@ -102,7 +104,10 @@ const useWorkout = () => {
                 workoutActions.sounds.playBell(0.9);
                 setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
             },
-            resetWorkout: function () {
+            stopWorkout: function () {
+                setWorkout({ ...workout, currentTime: workout.roundTime, currentRound: 1, currentPhase: INACTIVE, inProgress: false })
+            },
+            resetOptions: function () {
                 setWorkout(initialState)
             },
             changeOptions: function (optionName, value) {

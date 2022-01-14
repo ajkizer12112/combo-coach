@@ -17,7 +17,7 @@ const Home = () => {
             if (workout.currentTime === 0) {
                 timer.runZero();
             }
-            const timeout = () => setTimeout(() => timer.decrementTimer(), 10);
+            const timeout = () => setTimeout(() => timer.decrementTimer(), 1000);
             timerId = timeout();
         }
         return () => {
@@ -78,7 +78,7 @@ const Home = () => {
                 <div className="column columns is-centered is-12 is-multiline">
                     {workout.inProgress && workout.timerActive ? <button className="button" onClick={timer.pauseTimer}>Pause</button> : workout.inProgress ? <button className="button" onClick={timer.startTimer}>Play</button> : <button className="button" onClick={workoutFns.startWorkout}>Start</button>}
 
-                    <button onClick={workoutFns.resetWorkout} disabled={workout.inProgress && workout.timerActive} className="button">Reset</button>
+                    <button onClick={workoutFns.stopWorkout} disabled={workout.inProgress && workout.timerActive} className="button">Restart</button>
 
                 </div>
             </div>

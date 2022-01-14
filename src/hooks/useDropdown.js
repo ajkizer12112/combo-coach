@@ -18,8 +18,6 @@ const useDropdown = () => {
         roundWarningInterval: false,
     })
 
-
-    console.log(dropdown)
     const dropdownActions = {
         toggle: function (option, value) {
             setDropdown({ ...dropdown, [option]: value })
