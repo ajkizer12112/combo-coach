@@ -9,11 +9,23 @@ const Home = () => {
     const { workout, workoutActions: { timer, workoutFns, sounds } } = useContext(WorkoutContext)
     const { dropdown, dropdownActions } = useContext(DropdownContext)
     const [followup, setFollowup] = useState(false)
+    const [showCombo, setShowCombo] = useState(false);
+
+    const shouldShowCombo = () => {
+        if (!workout.timerActive || workout.currentPhase !== "WORK") {
+            setShowCombo(false);
+        } else {
+            setShowCombo(true);
+        }
+    }
+
+
     useEffect(() => {
         let timerId;
 
         timer.runWarningChecks();
         if (workout.timerActive) {
+            shouldShowCombo()
             if (workout.currentTime === 0) {
                 timer.runZero();
             }
@@ -66,6 +78,7 @@ const Home = () => {
     ]
 
 
+
     return (
         <div className="section has-background-dark columns is-justify-content-center is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
             <div className="column has-background-grey-dark is-align-items-center is-centered has-text-centered has-text-light columns is-multiline is-mobile is-6 is-circle">
@@ -73,11 +86,13 @@ const Home = () => {
                 <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
                 <div className="column is-12">
                     <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds === Infinity ? "∞" : workout.totalRounds}</p>
+                    {showCombo && workout.combo.sequence && workout.combo.sequence.map(action => <span className="is-size-5">{action} </span>)}
+                    <p>
 
+                        {showCombo && "Follow-up:"} {workout.inProgress && showCombo && workout.combo.followup.map(action => <><span className="is-size-5">{action} </span> </>)}
 
-
-                    {workout.timerActive && workout.currentPhase === "WORK" && workout.combo.sequence && workout.combo.sequence.map(action => <>{action}</>)}
-                    {followup && workout.timerActive && workout.currentPhase === "WORK" && workout.combo.sequence && workout.combo.followup.map(action => <>{action}</>)}
+                        {followup && <p className="is-size-2 is-4 has-text-danger">FOLLOW UP!</p>}
+                    </p>
                 </div>
                 <div className="column is-12">
                     <p className="is-size-2">

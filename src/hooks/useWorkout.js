@@ -14,6 +14,8 @@ const workoutStates = {
 
 const { INACTIVE, WORK, COUNTDOWN, REST } = workoutStates;
 
+const randomIndex = Math.floor(Math.random() * fundamentals.length)
+
 const initialState = {
     currentPhase: INACTIVE,
     currentRound: 1,
@@ -27,7 +29,7 @@ const initialState = {
     timerActive: false,
     isComplete: false,
     inProgress: false,
-    combo: [],
+    combo: fundamentals[randomIndex],
     combos: fundamentals
 }
 
@@ -47,8 +49,10 @@ const useWorkout = () => {
 
 
     useEffect(() => {
-
-        setWorkout({ ...workout, currentTime: workout.roundTime })
+        console.log(workout.combo)
+        const newState = Object.assign(workoutActions.workoutFns.genCombo(), { ...workout, currentTime: workout.roundTime, combos: fundamentals });
+        console.log(newState);
+        setWorkout(newState)
     }, [workout.roundTime])
 
     const workoutActions = {
@@ -69,7 +73,6 @@ const useWorkout = () => {
             decrementTimer: function () {
                 if (workout.currentTime % 30 === 0 && workout.currentTime !== workout.roundTime && workout.currentPhase === "WORK") {
                     const combo = workoutActions.workoutFns.genCombo();
-
                     return setWorkout({ ...workout, currentTime: workout.currentTime - 1, combo: combo.combo })
                 }
                 setWorkout({ ...workout, currentTime: workout.currentTime - 1 })
