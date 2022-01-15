@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import bellSound from "../utils/sounds/boxing-bell.mp3"
 import warningSound from '../utils/sounds/boxing-hit.wav'
+import { fundamentals } from '../combinations/fundamentals'
 
 
 
@@ -26,6 +27,8 @@ const initialState = {
     timerActive: false,
     isComplete: false,
     inProgress: false,
+    combo: [],
+    combos: fundamentals
 }
 
 
@@ -44,6 +47,7 @@ const useWorkout = () => {
 
 
     useEffect(() => {
+
         setWorkout({ ...workout, currentTime: workout.roundTime })
     }, [workout.roundTime])
 
@@ -63,6 +67,11 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
+                if (workout.currentTime % 30 === 0 && workout.currentTime !== workout.roundTime && workout.currentPhase === "WORK") {
+                    const combo = workoutActions.workoutFns.genCombo();
+
+                    return setWorkout({ ...workout, currentTime: workout.currentTime - 1, combo: combo.combo })
+                }
                 setWorkout({ ...workout, currentTime: workout.currentTime - 1 })
             },
             runZero: function () {
@@ -74,14 +83,23 @@ const useWorkout = () => {
                 else if (workout.currentPhase === "WORK") workoutActions.workoutFns.startRest();
             },
             runWarningChecks: function () {
-                const timePassed = workout.roundTime - workout.currentTime
-                if (workout.currentPhase === "WORK" && timePassed % workout.roundWarningInterval === 0 && timePassed !== 0) {
-                    workoutActions.sounds.playWarning();
+                if (workout.currentTime % 60 === 0 && workout.currentPhase === "WORK") {
+                    if (workout.currentTime !== workout.roundTime) {
+                        workoutActions.sounds.playWarning();
+                    }
+                }
+                if (workout.currentPhase === "REST") {
+                    if (workout.currentTime % 60 === 0 && workout.currentTime !== workout.restTime) {
+                        workoutActions.sounds.playWarning();
+                    }
                 }
 
-                if (workout.currentPhase === "REST" && workout.currentTime === 10) {
-                    workoutActions.sounds.playWarning();
+                if (workout.currentPhase !== "COUNTDOWN" && workout.currentPhase !== "INACTIVE") {
+                    if (workout.currentTime === 10) {
+                        workoutActions.sounds.playWarning(1200);
+                    }
                 }
+
             },
         },
         workoutFns: {
@@ -113,11 +131,21 @@ const useWorkout = () => {
             changeOptions: function (optionName, value) {
                 setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
             },
+            genCombo: function () {
+                let followup = false;
+                const index = Math.floor(Math.random() * workout.combos.length)
+                const combo = workout.combos[index]
+                const roll = Math.ceil(Math.random() * 10);
+                if (roll === 10) {
+                    followup = true
+                }
+                return ({ combo, followup })
+            }
         },
         sounds: {
-            playWarning: function () {
+            playWarning: function (time = 800) {
                 warning.play();
-                setTimeout(() => warning.loop = false, 800)
+                setTimeout(() => warning.loop = false, time)
             },
             playBell: function (rate) {
                 bell.playbackRate = rate;

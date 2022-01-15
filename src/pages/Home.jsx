@@ -3,12 +3,12 @@ import { WorkoutContext } from '../context/WorkoutContext'
 import { DropdownContext } from '../context/DropdownContext'
 import Dropdown from '../components/Dropdown'
 import Options from '../components/sections/Options'
-
+import { fundamentals } from '../combinations/fundamentals'
 
 const Home = () => {
     const { workout, workoutActions: { timer, workoutFns, sounds } } = useContext(WorkoutContext)
     const { dropdown, dropdownActions } = useContext(DropdownContext)
-
+    const [followup, setFollowup] = useState(false)
     useEffect(() => {
         let timerId;
 
@@ -17,6 +17,16 @@ const Home = () => {
             if (workout.currentTime === 0) {
                 timer.runZero();
             }
+
+            const roll = Math.ceil(Math.random() * 5)
+
+            if (roll === 5 && workout.currentTime % 3 === 0 && workout.currentTime !== 0 && workout.currentPhase === "WORK") {
+                setFollowup(true)
+                setTimeout(() => {
+                    setFollowup(false);
+                }, 2500)
+            }
+
             const timeout = () => setTimeout(() => timer.decrementTimer(), 1000);
             timerId = timeout();
         }
@@ -26,12 +36,11 @@ const Home = () => {
     }, [workout])
 
 
-
     const rounds = [3, 4, 6, 8, 10, 12, 24, Infinity];
     const restTimes = [30, 45, 60, 90, 120];
     const roundTimes = [120, 180, 300];
     const countDownTimes = [10, 30, 60];
-    const roundWarningTimes = [10, 30, 60];
+
 
     const dropdowns = [
         {
@@ -54,11 +63,6 @@ const Home = () => {
             items: countDownTimes,
             dropdownOption: "countDown"
         },
-        {
-            title: "Round Warning Inverval",
-            items: roundWarningTimes,
-            dropdownOption: "roundWarningInterval"
-        }
     ]
 
 
@@ -69,6 +73,11 @@ const Home = () => {
                 <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
                 <div className="column is-12">
                     <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds === Infinity ? "∞" : workout.totalRounds}</p>
+
+
+
+                    {workout.timerActive && workout.currentPhase === "WORK" && workout.combo.sequence && workout.combo.sequence.map(action => <>{action}</>)}
+                    {followup && workout.timerActive && workout.currentPhase === "WORK" && workout.combo.sequence && workout.combo.followup.map(action => <>{action}</>)}
                 </div>
                 <div className="column is-12">
                     <p className="is-size-2">
