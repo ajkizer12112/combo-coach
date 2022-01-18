@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import bellSound from "../utils/sounds/boxing-bell.mp3"
 import warningSound from '../utils/sounds/boxing-hit.wav'
-import { fundamentals } from '../combinations/fundamentals'
+import powerupSound from '../utils/sounds/powerup.mp3'
+import { peakaboo, fundamentals } from '../combinations/fundamentals'
 
 
 
@@ -14,7 +15,7 @@ const workoutStates = {
 
 const { INACTIVE, WORK, COUNTDOWN, REST } = workoutStates;
 
-const randomIndex = Math.floor(Math.random() * fundamentals.length)
+const comboIndex = Math.floor(Math.random() * fundamentals.combos.length)
 
 const initialState = {
     currentPhase: INACTIVE,
@@ -24,36 +25,26 @@ const initialState = {
     currentTime: 180,
     roundWarningInterval: 10,
     restTime: 60,
-    countDown: 10,
+    countDown: 2,
     roundChangeWarning: 10,
     timerActive: false,
     isComplete: false,
     inProgress: false,
-    combo: fundamentals[randomIndex],
-    combos: fundamentals
+    combo: fundamentals.combos[comboIndex],
+    combos: fundamentals,
+    followup: false
 }
-
-
-
 const useWorkout = () => {
     const [workout, setWorkout] = useState(initialState)
 
     const bell = new Audio(bellSound);
     const warning = new Audio(warningSound);
+    const powerup = new Audio(powerupSound);
 
     bell.playbackRate = 1.25;
     warning.playbackRate = 5;
+    powerup.playbackRate = 2;
     warning.loop = true;
-
-
-
-
-    useEffect(() => {
-        console.log(workout.combo)
-        const newState = Object.assign(workoutActions.workoutFns.genCombo(), { ...workout, currentTime: workout.roundTime, combos: fundamentals });
-        console.log(newState);
-        setWorkout(newState)
-    }, [workout.roundTime])
 
     const workoutActions = {
         timer: {
@@ -61,7 +52,6 @@ const useWorkout = () => {
                 const minutes = Math.floor(time / 60)
                 let seconds = time - minutes * 60
                 if (seconds < 10) seconds = `0${seconds}`
-
                 return `${minutes}:${seconds}`
             },
             pauseTimer: function () {
@@ -71,11 +61,15 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
-                if (workout.currentTime % 30 === 0 && workout.currentTime !== workout.roundTime && workout.currentPhase === "WORK") {
-                    const combo = workoutActions.workoutFns.genCombo();
-                    return setWorkout({ ...workout, currentTime: workout.currentTime - 1, combo: combo.combo })
+                if (workout.currentTime % 30 === 0 && workout.currentTime !== 0 && workout.currentTime !== workout.roundTime && workout.currentPhase === "WORK") {
+                    const { followup, newCombo } = workoutActions.workoutFns.genCombo();
+                    return setWorkout({ ...workout, currentTime: workout.currentTime - 1, combo: newCombo, followup: followup })
                 }
-                setWorkout({ ...workout, currentTime: workout.currentTime - 1 })
+
+
+                setWorkout({
+                    ...workout, currentTime: workout.currentTime - 1
+                })
             },
             runZero: function () {
                 if (workout.currentRound >= workout.totalRounds) {
@@ -102,7 +96,6 @@ const useWorkout = () => {
                         workoutActions.sounds.playWarning(1200);
                     }
                 }
-
             },
         },
         workoutFns: {
@@ -125,6 +118,9 @@ const useWorkout = () => {
                 workoutActions.sounds.playBell(0.9);
                 setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
             },
+            triggerFollowup: function () {
+                setWorkout({ ...workout, followup: false })
+            },
             stopWorkout: function () {
                 setWorkout({ ...workout, currentTime: workout.roundTime, currentRound: 1, currentPhase: INACTIVE, inProgress: false })
             },
@@ -132,17 +128,24 @@ const useWorkout = () => {
                 setWorkout(initialState)
             },
             changeOptions: function (optionName, value) {
+
+                if (optionName === "combos") {
+                    return setWorkout({ ...workout, [optionName]: value, combo: value.combos[0] })
+                }
                 setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
             },
             genCombo: function () {
                 let followup = false;
-                const index = Math.floor(Math.random() * workout.combos.length)
-                const combo = workout.combos[index]
-                const roll = Math.ceil(Math.random() * 10);
-                if (roll === 10) {
-                    followup = true
-                }
-                return ({ combo, followup })
+                let newCombo;
+
+                const index = Math.floor(Math.random() * workout.combos.combos.length)
+
+                console.log({ index });
+
+                newCombo = workout.combos.combos[index]
+
+                return { followup, newCombo }
+
             }
         },
         sounds: {
@@ -154,8 +157,12 @@ const useWorkout = () => {
                 bell.playbackRate = rate;
                 bell.play();
             },
+            playPowerup: function () {
+                powerup.play()
+            }
         },
     }
+
 
     return { workout, workoutActions }
 }
