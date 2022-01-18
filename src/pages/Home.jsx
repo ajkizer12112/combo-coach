@@ -6,7 +6,7 @@ import Options from '../components/sections/Options'
 import { peakaboo_basic, fundamentals } from '../combinations/fundamentals'
 
 
-const followupChance = 0.4
+const followupChance = 0.65
 
 const Home = () => {
     const { workout, workoutActions: { timer, workoutFns, sounds } } = useContext(WorkoutContext)
@@ -44,9 +44,6 @@ const Home = () => {
                 timer.runZero();
             }
 
-            if (workout.currentTime % 3 === 0 && workout.currentTime !== 0 && workout.currentTime !== workout.roundTime && workout.currentPhase === "WORK") {
-                rollForFollowup();
-            }
 
             const timeout = () => setTimeout(() => timer.decrementTimer(), 1000);
 
@@ -100,13 +97,10 @@ const Home = () => {
                 <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
                 <div className="column is-12">
                     <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds === Infinity ? "∞" : workout.totalRounds}</p>
-                    <p className="is-size-4">
-                        {workout.combo.sequence.join(" - ")}
+                    <p className={`is-size-4 base-combo ${followup ? "inactive" : "is-active"}`}>
+                        {showCombo && workout.combo.sequence.join(" - ")}
                     </p>
 
-                    <p className={`is-size-3 has-text-danger followup ${followup ? "is-active" : "inactive"}`}>
-                        {showCombo && workout.combo.followup.join(" - ")}
-                    </p>
 
                 </div>
                 <div className="column is-12">

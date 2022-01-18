@@ -1,31 +1,22 @@
 export const fundamentals = {
-    name: "fundamentals",
+    name: "Basics 1",
     combos: [
         {
-            sequence: ["1", "2", "1", "1", "2"],
-            followup: ["ROLL", "3", "2", "3"]
-        },
-        {
-            sequence: ["1", "2", "3", "4"],
-            followup: ["ROLL", "2", "3", "2"]
-        },
-        {
-            sequence: ["1", "2", "3", "2"],
-            followup: ["SR", "2", "3b", "5"]
-        },
-
-        {
-            sequence: ["1", "2", "3", "2", "3"],
-            followup: ["SL", "3b", "3", "2"]
+            sequence: ["1", "2"],
         },
         {
             sequence: ["1", "2"],
-            followup: ["PB", "2", "3", "6"]
         },
         {
-            sequence: ["1", "2b"],
-            followup: ["PB", "2", "3b", "3b", "3", "2"]
-        }
+            sequence: ["1", "1", "2b"],
+        },
+
+        {
+            sequence: ["1", "2", "Slip"],
+        },
+        {
+            sequence: ["1", "Slip", "1", "2"],
+        },
     ]
 };
 export const peakaboo_basic = {

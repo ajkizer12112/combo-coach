@@ -29,6 +29,7 @@
     margin: 0 .25rem;
 }
 
+
 .followup.inactive {
     opacity: .2;
     animation: .1s shrink ease-in-out;
@@ -38,6 +39,15 @@
     opacity: 1.1;
     transform: scale(1.13);
     animation: .1s grow ease-in-out
+}
+
+@keyframes fade-in {
+    from{
+        opacity: 0;
+    }
+    to {
+        opacity: 1
+    }
 }
 
 @keyframes grow {
