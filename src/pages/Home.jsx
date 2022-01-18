@@ -3,7 +3,7 @@ import { WorkoutContext } from '../context/WorkoutContext'
 import { DropdownContext } from '../context/DropdownContext'
 import Dropdown from '../components/Dropdown'
 import Options from '../components/sections/Options'
-import { peakaboo_basic, fundamentals } from '../combinations/fundamentals'
+import { combos } from '../combinations/fundamentals'
 
 
 const followupChance = 0.65
@@ -20,16 +20,6 @@ const Home = () => {
             setShowCombo(false);
         } else {
             setShowCombo(true);
-        }
-    }
-
-    const rollForFollowup = () => {
-        const value = Math.ceil(Math.random() * 1000)
-        const threshold = 1000 - 1000 * followupChance
-        if (value > threshold) {
-            setFollowup(true);
-            sounds.playPowerup();
-            setTimeout(() => setFollowup(false), 4000)
         }
     }
 
@@ -59,7 +49,6 @@ const Home = () => {
     const restTimes = [30, 45, 60, 90, 120];
     const roundTimes = [120, 180, 300];
     const countDownTimes = [10, 30, 60];
-    const combos = [fundamentals, peakaboo_basic]
 
 
     const dropdowns = [

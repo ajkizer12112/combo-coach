@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import bellSound from "../utils/sounds/boxing-bell.mp3"
 import warningSound from '../utils/sounds/boxing-hit.wav'
 import powerupSound from '../utils/sounds/powerup.mp3'
-import { peakaboo, fundamentals } from '../combinations/fundamentals'
+import { combos } from '../combinations/fundamentals'
 
 
 
@@ -15,7 +15,7 @@ const workoutStates = {
 
 const { INACTIVE, WORK, COUNTDOWN, REST } = workoutStates;
 
-const comboIndex = Math.floor(Math.random() * fundamentals.combos.length)
+const comboIndex = Math.floor(Math.random() * combos[0].combos.length)
 
 const initialState = {
     currentPhase: INACTIVE,
@@ -30,8 +30,8 @@ const initialState = {
     timerActive: false,
     isComplete: false,
     inProgress: false,
-    combo: fundamentals.combos[comboIndex],
-    combos: fundamentals,
+    combo: combos[0].combos[comboIndex],
+    combos: combos[0],
     followup: false
 }
 const useWorkout = () => {
