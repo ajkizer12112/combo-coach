@@ -28,7 +28,7 @@ const Dropdown = ({ menuAttr }) => {
     }
 
     return (
-        <div className={`dropdown ${dropdown[dropdownOption] ? "is-active" : ""}`}>
+        <div className={`dropdown mb-4 mx-3 ${dropdown[dropdownOption] ? "is-active" : ""}`}>
             <div className="dropdown-trigger" onClick={() => dropdownActions.toggle(dropdownOption, true)}>
                 <button className="button" aria-haspopup="true" aria-controls="dropdown-menu">
                     <span>{title}: {dropdownOption === "totalRounds" ? workout[dropdownOption] : dropdownOption === "combos" ? workout.combos.name : timer.convertToTime(workout[dropdownOption])}</span>

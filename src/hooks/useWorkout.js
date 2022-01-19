@@ -32,7 +32,9 @@ const initialState = {
     inProgress: false,
     combo: combos[0].combos[comboIndex],
     combos: combos[0],
-    followup: false
+    showCombo: true,
+    comboStartTime: null,
+    comboClass: "fade-in"
 }
 const useWorkout = () => {
     const [workout, setWorkout] = useState(initialState)
@@ -61,11 +63,20 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
-                if (workout.currentTime % 20 === 0 && workout.currentTime !== 0 && workout.currentTime !== workout.roundTime && workout.currentPhase === "WORK") {
-                    const { followup, newCombo } = workoutActions.workoutFns.genCombo();
-                    return setWorkout({ ...workout, currentTime: workout.currentTime - 1, combo: newCombo, followup: followup })
+
+
+                if (workout.currentTime % 6 === 0 && workout.currentTime !== 0 && workout.currentTime !== workout.roundTime && workout.currentPhase === "WORK") {
+                    const { newCombo } = workoutActions.workoutFns.genCombo();
+                    return setWorkout({ ...workout, currentTime: workout.currentTime - 1, comboClass: "fade-in", combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 })
                 }
 
+                if (workout.comboStartTime - workout.currentTime >= 2) {
+                    return setWorkout({ ...workout, comboClass: "fade-out", currentTime: workout.currentTime - 1 })
+                }
+
+                if (!workout.comboStartTime || workout.comboStartTime - workout.currentTime >= 3) {
+                    return setWorkout({ ...workout, showCombo: false, currentTime: workout.currentTime - 1 })
+                }
 
                 setWorkout({
                     ...workout, currentTime: workout.currentTime - 1
@@ -128,24 +139,16 @@ const useWorkout = () => {
                 setWorkout(initialState)
             },
             changeOptions: function (optionName, value) {
-
                 if (optionName === "combos") {
                     return setWorkout({ ...workout, [optionName]: value, combo: value.combos[0] })
                 }
                 setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
             },
             genCombo: function () {
-                let followup = false;
                 let newCombo;
-
                 const index = Math.floor(Math.random() * workout.combos.combos.length)
-
-                console.log({ index });
-
                 newCombo = workout.combos.combos[index]
-
-                return { followup, newCombo }
-
+                return { newCombo }
             }
         },
         sounds: {
