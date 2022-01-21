@@ -73,12 +73,10 @@ const Home = () => {
                     <div className={`has-background-danger light ${workout.inProgress && workout.currentPhase === "REST" ? "light-active" : ""}`}></div>
                     <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
                     <div className="column is-12">
-                        <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds === Infinity ? "∞" : workout.totalRounds}</p>
+                        <p className="is-size-2">Round: {workout.currentRound}/{workout.totalRounds === Infinity ? "unlimited" : workout.totalRounds}</p>
                         <p className={`is-size-4 ${workout.comboClass}`}>
                             {workout.currentPhase === "WORK" && workout.showCombo && workout.combo.sequence.join(" - ")}
                         </p>
-
-
                     </div>
                     <div className="column is-12">
                         <p className="is-size-2">
