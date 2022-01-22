@@ -64,7 +64,7 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
-                if (workout.currentTime % 6 === 0 && workout.currentTime !== 0 && workout.currentTime !== workout.roundTime && workout.currentPhase === "WORK") {
+                if (workout.currentTime % 6 === 0 && workout.currentTime !== 0 && workout.currentPhase === "WORK") {
                     const { newCombo } = workoutActions.workoutFns.genCombo();
                     return setWorkout({ ...workout, currentTime: workout.currentTime - 1, comboClass: "fade-in", combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 })
                 }
