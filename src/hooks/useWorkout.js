@@ -128,9 +128,6 @@ const useWorkout = () => {
                 workoutActions.sounds.playBell(0.9);
                 setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
             },
-            triggerFollowup: function () {
-                setWorkout({ ...workout, followup: false })
-            },
             stopWorkout: function () {
                 setWorkout({ ...workout, currentTime: workout.roundTime, currentRound: 1, currentPhase: INACTIVE, inProgress: false })
             },
@@ -139,9 +136,12 @@ const useWorkout = () => {
             },
             changeOptions: function (optionName, value) {
                 if (optionName === "combos") {
-                    return setWorkout({ ...workout, [optionName]: value, combo: value.combos[0] })
+                    setWorkout({ ...workout, [optionName]: value, combo: value.combos[0] })
+                } else if (optionName === "roundTime") {
+                    setWorkout({ ...workout, [optionName]: value, currentTime: value, timerActive: false, inProgress: false })
+                } else {
+                    setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
                 }
-                setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
             },
             genCombo: function () {
                 let newCombo;
