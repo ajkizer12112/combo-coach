@@ -36,7 +36,7 @@ const Home = () => {
     const restTimes = [30, 45, 60, 90, 120];
     const roundTimes = [120, 180, 300];
     const countDownTimes = [10, 30, 60];
-
+    const workoutRates = [8, 6, 5, 4, 3];
 
     const dropdowns = [
         {
@@ -63,6 +63,11 @@ const Home = () => {
             title: "Combos",
             items: combos,
             dropdownOption: "combos"
+        },
+        {
+            title: "Combo Rate",
+            items: workoutRates,
+            dropdownOption: "rate"
         }
     ]
 

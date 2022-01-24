@@ -21,10 +21,10 @@ export const combos = [
                 sequence: ["1b", "6"]
             },
             {
-                sequence: ["1", "2", "3b", "4b", "3", "4"]
+                sequence: ["1", "2", "3", "4"]
             },
             {
-                sequence: ["1", "2", "Pull", "2", "3"]
+                sequence: ["1", "2", "Pull", "2"]
             },
             {
                 sequence: ["1", "2", "3", "Roll"]

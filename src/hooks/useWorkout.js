@@ -32,6 +32,7 @@ const initialState = {
     inProgress: false,
     combo: combos[0].combos[comboIndex],
     combos: combos[0],
+    rate: 6,
     showCombo: true,
     comboStartTime: null,
     comboClass: "fade-in"
@@ -64,12 +65,12 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
-                if (workout.currentTime % 6 === 0 && workout.currentTime !== 0 && workout.currentPhase === "WORK") {
+                if (workout.currentTime % workout.rate === 0 && workout.currentTime !== 0 && workout.currentPhase === "WORK") {
                     const { newCombo } = workoutActions.workoutFns.genCombo();
                     return setWorkout({ ...workout, currentTime: workout.currentTime - 1, comboClass: "fade-in", combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 })
                 }
 
-                if (workout.comboStartTime - workout.currentTime >= 2) {
+                if (workout.comboStartTime - workout.currentTime >= workout.rate / 3) {
                     return setWorkout({ ...workout, comboClass: "fade-out", currentTime: workout.currentTime - 1 })
                 }
 
