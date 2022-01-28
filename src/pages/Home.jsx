@@ -12,7 +12,6 @@ const Home = () => {
     const { workout, workoutActions: { timer, workoutFns, sounds } } = useContext(WorkoutContext)
     const { dropdown, dropdownActions } = useContext(DropdownContext)
 
-
     useEffect(() => {
         let timerId;
         timer.runWarningChecks();
@@ -20,7 +19,6 @@ const Home = () => {
             if (workout.currentTime === 0) {
                 timer.runZero();
             }
-
 
             const timeout = () => setTimeout(() => timer.decrementTimer(), 1000);
             timerId = timeout();
@@ -33,10 +31,9 @@ const Home = () => {
 
 
     const rounds = [3, 4, 6, 8, 10, 12, 24, Infinity];
-    const restTimes = [30, 45, 60, 90, 120];
+    const restTimes = [30, 45, 60];
     const roundTimes = [120, 180, 300];
-    const countDownTimes = [10, 30, 60];
-    const workoutRates = [8, 6, 5, 4, 3];
+    const workoutRates = [5, 3, 2];
 
     const dropdowns = [
         {
@@ -50,24 +47,19 @@ const Home = () => {
             dropdownOption: "restTime"
         },
         {
+            title: "Combo Rate",
+            items: workoutRates,
+            dropdownOption: "rate"
+        },
+        {
             title: "Round Time",
             items: roundTimes,
             dropdownOption: "roundTime"
         },
         {
-            title: "Countdown",
-            items: countDownTimes,
-            dropdownOption: "countDown"
-        },
-        {
             title: "Combos",
             items: combos,
             dropdownOption: "combos"
-        },
-        {
-            title: "Combo Rate",
-            items: workoutRates,
-            dropdownOption: "rate"
         }
     ]
 
@@ -79,7 +71,10 @@ const Home = () => {
                     <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
                     <div className="column is-12">
                         <p className="is-size-5 has-font-8bit mb-6">Round:{workout.currentRound}/{workout.totalRounds === Infinity ? "unlimited" : workout.totalRounds}</p>
+                        {workout.currentPhase === "INACTIVE" && <span className={`has-font-8bit is-size-3 is-size-5-mobile ${workout.comboClass}`}>select options and press start</span>}
+                        {workout.currentPhase === "COUNTDOWN" && <span className={`has-font-8bit is-size-3 is-size-5-mobile ${workout.comboClass}`}>GET READY</span>}
                         <p className={`has-font-8bit is-size-3 is-size-5-mobile ${workout.comboClass}`}>
+
                             <span className={!workout.showCombo || workout.currentPhase !== "WORK" ? "is-invisible" : ""}>{workout.combo.sequence.join("-")}</span>
                         </p>
                     </div>

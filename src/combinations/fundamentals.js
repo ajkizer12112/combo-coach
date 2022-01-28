@@ -36,8 +36,36 @@ export const combos = [
                 sequence: ["Slip", "2", "3"]
             }
         ]
+    },
+    {
+        name: "Inside",
+        combos: [
+            {
+                sequence: ["5b", "3", "6"]
+            },
+            {
+                sequence: ["1", "2", "3b", "4b", "3b", "4"]
+            },
+            {
+                sequence: ["5", "4", "3b", "4"]
+            },
+            {
+                sequence: ["2", "Roll", "4b", "3b", "4",]
+            },
+            {
+                sequence: ["3b", "3", "6"]
+            },
+            {
+                sequence: ["3b", "5", "4"]
+            },
+            {
+                sequence: ["3b", "4", "3"]
+            },
+            {
+                sequence: ["2", "3", "Roll", "3b", "5"]
+            },
+        ]
     }
-
 ]
 
 
