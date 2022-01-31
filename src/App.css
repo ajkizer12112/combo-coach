@@ -62,6 +62,10 @@
     opacity: 0;
 }
 
+.activated {
+    animation: .3s activated ease-in-out;
+}
+
 @keyframes fade-in {
     from{
         opacity: 0;
@@ -77,5 +81,22 @@
     }
     to{
         opacity: 0;
+    }
+}
+
+@keyframes activated {
+    0% {
+        opacity: 0
+    }
+    25%{
+        opacity: .5;
+        transform: scale(1.1)
+    }
+    75% {
+        opacity: 1;
+        transform: scale(1.05)
+    }
+    100% {
+        transform: scale(1);
     }
 }

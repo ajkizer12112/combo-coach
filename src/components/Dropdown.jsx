@@ -9,14 +9,14 @@ const Dropdown = ({ menuAttr }) => {
 
     const genText = (dropdownOption, item) => {
         let rtnVal;
-        console.log({ dropdownOption })
+
         if (dropdownOption === "totalRounds") {
             if (item === Infinity) rtnVal = "Unlimited"
             else rtnVal = item
         } else if (dropdownOption === "combos") {
             rtnVal = item.name
         } else if (dropdownOption === "rate") {
-            console.log("hello")
+
             if (item === 5) rtnVal = "Easy"
             else if (item === 4) rtnVal = "Amateur"
             else if (item === 3) rtnVal = "Pro"

@@ -31,11 +31,15 @@ const initialState = {
     isComplete: false,
     inProgress: false,
     combo: combos[0].combos[comboIndex],
+    followup: combos[0].combos[comboIndex].followups[0],
     combos: combos[0],
     rate: 3,
+    followupChance: 70,
     showCombo: false,
+    showFollowup: false,
     comboStartTime: null,
-    comboClass: "fade-in"
+    comboClass: "fade-in",
+    followupClass: ""
 }
 
 const useWorkout = () => {
@@ -67,11 +71,19 @@ const useWorkout = () => {
             decrementTimer: function () {
                 if (workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === "WORK") {
                     const { newCombo } = workoutActions.workoutFns.genCombo();
-                    return setWorkout({ ...workout, currentTime: workout.currentTime - 1, combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 })
+                    const roll = Math.ceil(Math.random() * 100);
+                    const followup = newCombo.followups[Math.floor(Math.random() * newCombo.followups.length)]
+                    const showFollowup = roll <= workout.followupChance
+                    let followupClass = ""
+                    if (showFollowup) {
+                        followupClass = "activated"
+                        setTimeout(() => workoutActions.sounds.playPowerup(), 500)
+                    }
+                    return setWorkout({ ...workout, currentTime: workout.currentTime - 1, followupClass: followupClass, showFollowup: showFollowup, followup: followup, combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 })
                 }
 
                 if (!workout.comboStartTime || workout.comboStartTime - workout.currentTime >= workout.rate - 2) {
-                    return setWorkout({ ...workout, showCombo: false, currentTime: workout.currentTime - 1 })
+                    return setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: "", currentTime: workout.currentTime - 1 })
                 }
 
                 setWorkout({

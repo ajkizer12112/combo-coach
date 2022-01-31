@@ -80,6 +80,9 @@ const Home = () => {
 
                             <span className={!workout.showCombo || workout.currentPhase !== "WORK" ? "is-invisible" : ""}>{workout.combo.sequence.join("-")}</span>
                         </p>
+                        <p className={`${workout.followupClass} has-font-8bit is-size-3 is-danger is-size-5-mobile`}>
+                            <span className={!workout.showFollowup || workout.currentPhase !== "WORK" ? "is-invisible" : ""}>{workout.followup.join("-")}</span>
+                        </p>
                     </div>
                     <div className="column is-12 has-font-8bit">
                         <p className="is-size-2">
