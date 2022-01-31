@@ -9,14 +9,19 @@ const Dropdown = ({ menuAttr }) => {
 
     const genText = (dropdownOption, item) => {
         let rtnVal;
+        console.log({ dropdownOption })
         if (dropdownOption === "totalRounds") {
-            if (item === Infinity) {
-                rtnVal = "Unlimited"
-            } else {
-                rtnVal = item
-            }
+            if (item === Infinity) rtnVal = "Unlimited"
+            else rtnVal = item
         } else if (dropdownOption === "combos") {
             rtnVal = item.name
+        } else if (dropdownOption === "rate") {
+            console.log("hello")
+            if (item === 5) rtnVal = "Easy"
+            else if (item === 4) rtnVal = "Amateur"
+            else if (item === 3) rtnVal = "Pro"
+            else if (item === 2) rtnVal = "Legend"
+            else rtnVal = item
         } else {
             rtnVal = timer.convertToTime(item)
         }
@@ -30,11 +35,18 @@ const Dropdown = ({ menuAttr }) => {
         }
     }
 
+    const genTitle = () => {
+        if (dropdownOption === "totalRounds") { return workout[dropdownOption] === Infinity ? "Unlimited" : workout[dropdownOption] }
+        else if (dropdownOption === "combos") return workout.combos.name
+        else if (dropdownOption === "rate") return genText("rate", workout.rate)
+        else return timer.convertToTime(workout[dropdownOption])
+    }
+
     return (
         <div className={`dropdown mb-4 px-6 ${dropdown[dropdownOption] ? "is-active" : ""}`}>
             <div className="dropdown-trigger" onClick={handleClick}>
                 <button className="button" aria-haspopup="true" aria-controls="dropdown-menu ">
-                    <span className=" has-font-8bit small-text">{title}: {dropdownOption === "totalRounds" ? workout[dropdownOption] : dropdownOption === "combos" ? workout.combos.name : timer.convertToTime(workout[dropdownOption])}</span>
+                    <span className=" has-font-8bit small-text">{title}: {genTitle()} </span>
                     <span className="icon is-small">
                         <i className="fas fa-angle-down" aria-hidden="true"></i>
                     </span>

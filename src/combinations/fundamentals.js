@@ -1,3 +1,5 @@
+//each combo stored as an object with 1 field instead of a 2d array.  This is in anticipation of future updates/additions to the combo feature.
+
 export const combos = [
     {
         name: "Fundamentals",

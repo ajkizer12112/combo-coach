@@ -25,7 +25,7 @@ const initialState = {
     currentTime: 180,
     roundWarningInterval: 10,
     restTime: 60,
-    countDown: 0,
+    countDown: 5,
     roundChangeWarning: 10,
     timerActive: false,
     isComplete: false,
@@ -33,7 +33,7 @@ const initialState = {
     combo: combos[0].combos[comboIndex],
     combos: combos[0],
     rate: 3,
-    showCombo: true,
+    showCombo: false,
     comboStartTime: null,
     comboClass: "fade-in"
 }

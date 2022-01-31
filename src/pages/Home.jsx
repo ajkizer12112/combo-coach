@@ -4,13 +4,17 @@ import { DropdownContext } from '../context/DropdownContext'
 import Dropdown from '../components/Dropdown'
 import Options from '../components/sections/Options'
 import { combos } from '../combinations/fundamentals'
+import ModalWrapper from '../components/modals/ModalWrapper'
 
-
-const followupChance = 0.65
 
 const Home = () => {
     const { workout, workoutActions: { timer, workoutFns, sounds } } = useContext(WorkoutContext)
     const { dropdown, dropdownActions } = useContext(DropdownContext)
+
+    const [showModal, toggleModal] = useState(false);
+
+    const closeModal = () => toggleModal(false);
+    const openModal = () => toggleModal(true);
 
     useEffect(() => {
         let timerId;
@@ -29,11 +33,10 @@ const Home = () => {
         }
     }, [workout])
 
-
     const rounds = [3, 4, 6, 8, 10, 12, 24, Infinity];
     const restTimes = [30, 45, 60];
     const roundTimes = [120, 180, 300];
-    const workoutRates = [5, 3, 2];
+    const workoutRates = [5, 4, 3, 2];
 
     const dropdowns = [
         {
@@ -71,7 +74,7 @@ const Home = () => {
                     <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
                     <div className="column is-12">
                         <p className="is-size-5 has-font-8bit mb-6">Round:{workout.currentRound}/{workout.totalRounds === Infinity ? "unlimited" : workout.totalRounds}</p>
-                        {workout.currentPhase === "INACTIVE" && <span className={`has-font-8bit is-size-3 is-size-5-mobile ${workout.comboClass}`}>select options and press start</span>}
+                        {workout.currentPhase === "INACTIVE" && <span className={`has-font-8bit is-size-5 is-size-5-mobile ${workout.comboClass}`}>select options/press start</span>}
                         {workout.currentPhase === "COUNTDOWN" && <span className={`has-font-8bit is-size-3 is-size-5-mobile ${workout.comboClass}`}>GET READY</span>}
                         <p className={`has-font-8bit is-size-3 is-size-5-mobile ${workout.comboClass}`}>
 
@@ -87,12 +90,16 @@ const Home = () => {
                         {workout.inProgress && workout.timerActive ? <button className="button has-font-8bit " onClick={timer.pauseTimer}>Pause</button> : workout.inProgress ? <button className="button  has-font-8bit " onClick={timer.startTimer}>Play</button> : <button className="button  has-font-8bit " onClick={workoutFns.startWorkout}>Start</button>}
 
                         <button onClick={workoutFns.stopWorkout} disabled={workout.inProgress && workout.timerActive} className="button  has-font-8bit ">Restart</button>
-
+                        <button className="button has-font-8bit" onClick={openModal} disabled={workout.inProgress}>Options</button>
                     </div>
                     {/* <button disabled={workout.inProgress} className="button has-font-8bit" onClick={workoutFns.resetOptions}>Reset</button> */}
                 </div>
-
-                <Options dropdowns={dropdowns} />
+                <ModalWrapper closeModal={closeModal} showModal={showModal}>
+                    <Options dropdowns={dropdowns} />
+                    <div className="has-text-centered">
+                        <button className="button my-6 mx-auto has-font-8bit" onClick={closeModal}>Save</button>
+                    </div>
+                </ModalWrapper>
 
             </section  >
         </main>
