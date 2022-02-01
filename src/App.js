@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { useMemo } from 'react';
 import useWorkout from './hooks/useWorkout';

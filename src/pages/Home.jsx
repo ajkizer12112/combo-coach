@@ -5,6 +5,7 @@ import Dropdown from '../components/Dropdown'
 import Options from '../components/sections/Options'
 import { combos } from '../combinations/fundamentals'
 import ModalWrapper from '../components/modals/ModalWrapper'
+import TimerControls from '../components/sections/TimerControls'
 
 
 const Home = () => {
@@ -89,12 +90,13 @@ const Home = () => {
                             {timer.convertToTime(workout.currentTime)}
                         </p>
                     </div>
-                    <div className="column button-container is-centered is-12 is-multiline">
+                    <TimerControls />
+                    {/* <div className="column button-container is-centered is-12 is-multiline">
                         {workout.inProgress && workout.timerActive ? <button className="button has-font-8bit " onClick={timer.pauseTimer}>Pause</button> : workout.inProgress ? <button className="button  has-font-8bit " onClick={timer.startTimer}>Play</button> : <button className="button  has-font-8bit " onClick={workoutFns.startWorkout}>Start</button>}
 
                         <button onClick={workoutFns.stopWorkout} disabled={workout.inProgress && workout.timerActive} className="button  has-font-8bit ">Restart</button>
                         <button className="button has-font-8bit" onClick={openModal} disabled={workout.inProgress}>Options</button>
-                    </div>
+                    </div> */}
                     {/* <button disabled={workout.inProgress} className="button has-font-8bit" onClick={workoutFns.resetOptions}>Reset</button> */}
                 </div>
                 <ModalWrapper closeModal={closeModal} showModal={showModal}>
