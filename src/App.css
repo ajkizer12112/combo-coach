@@ -4,11 +4,13 @@
 .has-font-8bit {
     font-family: 'Press Start 2P', cursive;
 }
+
 .small-text {
     font-size: .8rem;
     letter-spacing: -.5px;
 }
-.timer-container {
+
+main {
     min-height: 100vh;
 }
 
@@ -63,7 +65,9 @@
 }
 
 .activated {
-    animation: .3s activated ease-in-out;
+    opacity: 0;
+    animation: .1s activated ease-in-out forwards;
+    animation-delay: 500ms;
 }
 
 @keyframes fade-in {
@@ -88,15 +92,11 @@
     0% {
         opacity: 0
     }
-    25%{
-        opacity: .5;
-        transform: scale(1.1)
-    }
-    75% {
-        opacity: 1;
-        transform: scale(1.05)
+    95%{
+        transform: scale(1.5)
     }
     100% {
-        transform: scale(1);
+        transform: scale(1.3);
+        opacity: 1
     }
 }

@@ -42,6 +42,7 @@ const initialState = {
     followupClass: ""
 }
 
+
 const useWorkout = () => {
     const [workout, setWorkout] = useState(initialState)
 
@@ -70,7 +71,7 @@ const useWorkout = () => {
             },
             decrementTimer: function () {
                 if (workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === "WORK") {
-                    const { newCombo } = workoutActions.workoutFns.genCombo();
+                    const newCombo = workoutActions.workoutFns.genCombo();
                     const roll = Math.ceil(Math.random() * 100);
                     const followup = newCombo.followups[Math.floor(Math.random() * newCombo.followups.length)]
                     const showFollowup = roll <= workout.followupChance
@@ -153,10 +154,8 @@ const useWorkout = () => {
                 }
             },
             genCombo: function () {
-                let newCombo;
                 const index = Math.floor(Math.random() * workout.combos.combos.length)
-                newCombo = workout.combos.combos[index]
-                return { newCombo }
+                return workout.combos.combos[index]
             }
         },
         sounds: {
@@ -174,6 +173,22 @@ const useWorkout = () => {
         },
     }
 
+    useEffect(() => {
+        let timerId;
+        workoutActions.timer.runWarningChecks();
+        if (workout.timerActive) {
+            if (workout.currentTime === 0) {
+                workoutActions.timer.runZero();
+            }
+
+            const timeout = () => setTimeout(() => workoutActions.timer.decrementTimer(), 1000);
+            timerId = timeout();
+        }
+
+        return () => {
+            clearTimeout(timerId)
+        }
+    }, [workout])
 
     return { workout, workoutActions }
 }

@@ -72,8 +72,8 @@ const Home = () => {
 
     return (
         <main className="has-background-dark">
-            <section className="timer-container mx-auto section columns is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
-                <div className="column has-background-grey-dark is-align-items-center is-centered has-text-centered has-text-light columns is-multiline is-mobile is-10 mx-auto p-6">
+            <section className=" mx-auto columns section is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
+                <div className="column has-background-grey-dark  is-centered has-text-centered has-text-light columns is-multiline is-mobile is-10 mx-auto">
                     <Lights />
                     <WorkoutDisplay />
                     <TimerDisplay />
