@@ -7,6 +7,8 @@ import { combos } from '../combinations/fundamentals'
 import ModalWrapper from '../components/modals/ModalWrapper'
 import TimerControls from '../components/sections/TimerControls'
 import TimerDisplay from '../components/sections/TimerDisplay'
+import WorkoutDisplay from '../components/sections/WorkoutDisplay'
+import Lights from '../components/sections/Lights'
 
 
 const Home = () => {
@@ -72,20 +74,8 @@ const Home = () => {
         <main className="has-background-dark">
             <section className="timer-container mx-auto section columns is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
                 <div className="column has-background-grey-dark is-align-items-center is-centered has-text-centered has-text-light columns is-multiline is-mobile is-10 mx-auto p-6">
-                    <div className={`has-background-danger light ${workout.inProgress && workout.currentPhase === "REST" ? "light-active" : ""}`}></div>
-                    <div className={`has-background-success light  ${workout.inProgress && workout.currentPhase === "WORK" ? "light-active" : ""}`}></div>
-                    <div className="column is-12">
-                        <p className="is-size-5 has-font-8bit mb-6">Round:{workout.currentRound}/{workout.totalRounds === Infinity ? "unlimited" : workout.totalRounds}</p>
-                        {workout.currentPhase === "INACTIVE" && <span className={`has-font-8bit is-size-5 is-size-5-mobile ${workout.comboClass}`}>select options/press start</span>}
-                        {workout.currentPhase === "COUNTDOWN" && <span className={`has-font-8bit is-size-3 is-size-5-mobile ${workout.comboClass}`}>GET READY</span>}
-                        <p className={`has-font-8bit is-size-3 is-size-5-mobile ${workout.comboClass}`}>
-
-                            <span className={!workout.showCombo || workout.currentPhase !== "WORK" ? "is-invisible" : ""}>{workout.combo.sequence.join("-")}</span>
-                        </p>
-                        <p className={`${workout.followupClass} has-font-8bit is-size-3 is-danger is-size-5-mobile`}>
-                            <span className={!workout.showFollowup || workout.currentPhase !== "WORK" ? "is-invisible" : ""}>{workout.followup.join("-")}</span>
-                        </p>
-                    </div>
+                    <Lights />
+                    <WorkoutDisplay />
                     <TimerDisplay />
                     <TimerControls openModal={openModal} />
                 </div>
