@@ -3,7 +3,7 @@ import { WorkoutContext } from '../context/WorkoutContext'
 import { DropdownContext } from '../context/DropdownContext'
 import Dropdown from '../components/Dropdown'
 import Options from '../components/sections/Options'
-import { combos } from '../combinations/fundamentals'
+
 import ModalWrapper from '../components/modals/ModalWrapper'
 import TimerControls from '../components/sections/TimerControls'
 import TimerDisplay from '../components/sections/TimerDisplay'
@@ -20,55 +20,6 @@ const Home = () => {
     const closeModal = () => toggleModal(false);
     const openModal = () => toggleModal(true);
 
-    // useEffect(() => {
-    //     let timerId;
-    //     timer.runWarningChecks();
-    //     if (workout.timerActive) {
-    //         if (workout.currentTime === 0) {
-    //             timer.runZero();
-    //         }
-
-    //         const timeout = () => setTimeout(() => timer.decrementTimer(), 1000);
-    //         timerId = timeout();
-    //     }
-
-    //     return () => {
-    //         clearTimeout(timerId)
-    //     }
-    // }, [workout])
-
-    const rounds = [3, 4, 6, 8, 10, 12, 24, Infinity];
-    const restTimes = [30, 45, 60];
-    const roundTimes = [120, 180, 300];
-    const workoutRates = [5, 4, 3, 2];
-
-    const dropdowns = [
-        {
-            title: "Number of Rounds",
-            items: rounds,
-            dropdownOption: "totalRounds"
-        },
-        {
-            title: "Rest",
-            items: restTimes,
-            dropdownOption: "restTime"
-        },
-        {
-            title: "Combo Rate",
-            items: workoutRates,
-            dropdownOption: "rate"
-        },
-        {
-            title: "Round Time",
-            items: roundTimes,
-            dropdownOption: "roundTime"
-        },
-        {
-            title: "Combos",
-            items: combos,
-            dropdownOption: "combos"
-        }
-    ]
 
     return (
         <main className="has-background-dark">
@@ -80,7 +31,7 @@ const Home = () => {
                     <TimerControls openModal={openModal} />
                 </div>
                 <ModalWrapper closeModal={closeModal} showModal={showModal}>
-                    <Options dropdowns={dropdowns} />
+                    <Options />
                     <div className="has-text-centered">
                         <button className="button my-6 mx-auto has-font-8bit" onClick={closeModal}>Save</button>
                     </div>

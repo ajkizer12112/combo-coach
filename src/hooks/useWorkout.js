@@ -18,7 +18,6 @@ const { INACTIVE, WORK, COUNTDOWN, REST } = workoutStates;
 const comboIndex = Math.floor(Math.random() * combos[0].combos.length)
 
 const initialState = {
-    currentPhase: INACTIVE,
     currentRound: 1,
     totalRounds: 3,
     roundTime: 180,
@@ -27,17 +26,21 @@ const initialState = {
     restTime: 60,
     countDown: 5,
     roundChangeWarning: 10,
+    rate: 3,
+    followupChance: 70,
+    comboStartTime: null,
+
     timerActive: false,
     isComplete: false,
     inProgress: false,
+    showCombo: false,
+    showFollowup: false,
+
     combo: combos[0].combos[comboIndex],
     followup: combos[0].combos[comboIndex].followups[0],
     combos: combos[0],
-    rate: 3,
-    followupChance: 70,
-    showCombo: false,
-    showFollowup: false,
-    comboStartTime: null,
+
+    currentPhase: INACTIVE,
     comboClass: "fade-in",
     followupClass: ""
 }
@@ -71,20 +74,11 @@ const useWorkout = () => {
             },
             decrementTimer: function () {
                 if (workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === "WORK") {
-                    const newCombo = workoutActions.workoutFns.genCombo();
-                    const roll = Math.ceil(Math.random() * 100);
-                    const followup = newCombo.followups[Math.floor(Math.random() * newCombo.followups.length)]
-                    const showFollowup = roll <= workout.followupChance
-                    let followupClass = ""
-                    if (showFollowup) {
-                        followupClass = "activated"
-                        setTimeout(() => workoutActions.sounds.playPowerup(), 500)
-                    }
-                    return setWorkout({ ...workout, currentTime: workout.currentTime - 1, followupClass: followupClass, showFollowup: showFollowup, followup: followup, combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 })
+                    return workoutActions.workoutFns.activateNextCombo();
                 }
 
                 if (!workout.comboStartTime || workout.comboStartTime - workout.currentTime >= workout.rate - 2) {
-                    return setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: "", currentTime: workout.currentTime - 1 })
+                    return workoutActions.workoutFns.hideCombo();
                 }
 
                 setWorkout({
@@ -156,6 +150,21 @@ const useWorkout = () => {
             genCombo: function () {
                 const index = Math.floor(Math.random() * workout.combos.combos.length)
                 return workout.combos.combos[index]
+            },
+            activateNextCombo: function () {
+                const newCombo = workoutActions.workoutFns.genCombo();
+                const roll = Math.ceil(Math.random() * 100);
+                const followup = newCombo.followups[Math.floor(Math.random() * newCombo.followups.length)]
+                const showFollowup = roll <= workout.followupChance
+                let followupClass = ""
+                if (showFollowup) {
+                    followupClass = "activated"
+                    setTimeout(() => workoutActions.sounds.playPowerup(), 500)
+                }
+                return setWorkout({ ...workout, currentTime: workout.currentTime - 1, followupClass: followupClass, showFollowup: showFollowup, followup: followup, combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 })
+            },
+            hideCombo: function () {
+                setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: "", currentTime: workout.currentTime - 1 })
             }
         },
         sounds: {
