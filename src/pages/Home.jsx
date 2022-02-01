@@ -6,6 +6,7 @@ import Options from '../components/sections/Options'
 import { combos } from '../combinations/fundamentals'
 import ModalWrapper from '../components/modals/ModalWrapper'
 import TimerControls from '../components/sections/TimerControls'
+import TimerDisplay from '../components/sections/TimerDisplay'
 
 
 const Home = () => {
@@ -17,22 +18,22 @@ const Home = () => {
     const closeModal = () => toggleModal(false);
     const openModal = () => toggleModal(true);
 
-    useEffect(() => {
-        let timerId;
-        timer.runWarningChecks();
-        if (workout.timerActive) {
-            if (workout.currentTime === 0) {
-                timer.runZero();
-            }
+    // useEffect(() => {
+    //     let timerId;
+    //     timer.runWarningChecks();
+    //     if (workout.timerActive) {
+    //         if (workout.currentTime === 0) {
+    //             timer.runZero();
+    //         }
 
-            const timeout = () => setTimeout(() => timer.decrementTimer(), 1000);
-            timerId = timeout();
-        }
+    //         const timeout = () => setTimeout(() => timer.decrementTimer(), 1000);
+    //         timerId = timeout();
+    //     }
 
-        return () => {
-            clearTimeout(timerId)
-        }
-    }, [workout])
+    //     return () => {
+    //         clearTimeout(timerId)
+    //     }
+    // }, [workout])
 
     const rounds = [3, 4, 6, 8, 10, 12, 24, Infinity];
     const restTimes = [30, 45, 60];
@@ -85,19 +86,8 @@ const Home = () => {
                             <span className={!workout.showFollowup || workout.currentPhase !== "WORK" ? "is-invisible" : ""}>{workout.followup.join("-")}</span>
                         </p>
                     </div>
-                    <div className="column is-12 has-font-8bit">
-                        <p className="is-size-2">
-                            {timer.convertToTime(workout.currentTime)}
-                        </p>
-                    </div>
-                    <TimerControls />
-                    {/* <div className="column button-container is-centered is-12 is-multiline">
-                        {workout.inProgress && workout.timerActive ? <button className="button has-font-8bit " onClick={timer.pauseTimer}>Pause</button> : workout.inProgress ? <button className="button  has-font-8bit " onClick={timer.startTimer}>Play</button> : <button className="button  has-font-8bit " onClick={workoutFns.startWorkout}>Start</button>}
-
-                        <button onClick={workoutFns.stopWorkout} disabled={workout.inProgress && workout.timerActive} className="button  has-font-8bit ">Restart</button>
-                        <button className="button has-font-8bit" onClick={openModal} disabled={workout.inProgress}>Options</button>
-                    </div> */}
-                    {/* <button disabled={workout.inProgress} className="button has-font-8bit" onClick={workoutFns.resetOptions}>Reset</button> */}
+                    <TimerDisplay />
+                    <TimerControls openModal={openModal} />
                 </div>
                 <ModalWrapper closeModal={closeModal} showModal={showModal}>
                     <Options dropdowns={dropdowns} />
