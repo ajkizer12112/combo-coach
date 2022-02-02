@@ -1,29 +1,29 @@
 import React, { useMemo } from 'react';
-import useAuth from '../hooks/useAuth';
+import useAccount from '../hooks/useAccount';
 import useWorkout from '../hooks/useWorkout';
 import useDropdown from '../hooks/useDropdown';
 
-import { AuthContext } from './AuthContext';
+import { AccountContext } from './AccountContext';
 import { WorkoutContext } from './WorkoutContext';
 import { DropdownContext } from './DropdownContext';
 
 const ContextProvider = (props) => {
     const { workout, workoutActions } = useWorkout();
     const { dropdown, dropdownActions } = useDropdown();
-    const { auth, login, logout } = useAuth();
+    const { account, authenticationFns, profileFns, userStats } = useAccount();
 
     const workoutValue = useMemo(() => ({ workout, workoutActions }), [workout, workoutActions])
     const dropdownValue = useMemo(() => ({ dropdown, dropdownActions }), [dropdown, dropdownActions])
-    const authValue = useMemo(() => ({ auth, login, logout }), [auth, login, logout])
+    const accountValue = useMemo(() => ({ account, authenticationFns, profileFns, userStats }), [account, authenticationFns, profileFns, userStats])
 
     return (
-        <AuthContext.Provider value={authValue}>
+        <AccountContext.Provider value={accountValue}>
             < WorkoutContext.Provider value={workoutValue} >
                 <DropdownContext.Provider value={dropdownValue}>
                     {props.children}
                 </DropdownContext.Provider>
             </WorkoutContext.Provider >
-        </AuthContext.Provider>
+        </AccountContext.Provider>
     )
 
 };

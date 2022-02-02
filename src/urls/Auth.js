@@ -1,1 +1,1 @@
-export const mainRoot = "http://localhost:8001/api/v1/auth"
+export const mainRoot = "http://localhost:8001/api/v1"
