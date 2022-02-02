@@ -35,10 +35,28 @@ const initialState = {
     inProgress: false,
     showCombo: false,
     showFollowup: false,
-
+    punches: [],
     combo: combos[0].combos[comboIndex],
     followup: combos[0].combos[comboIndex].followups[0],
     combos: combos[0],
+    maneuverTracker: {
+        "1": 0,
+        "1b": 0,
+        "2": 0,
+        "2b": 0,
+        "3": 0,
+        "3b": 0,
+        "4": 0,
+        "4b": 0,
+        "5": 0,
+        "5b": 0,
+        "6": 0,
+        "6b": 0,
+        "Pull": 0,
+        "Slip": 0,
+        "Roll": 0,
+        "Duck": 0
+    },
 
     currentPhase: INACTIVE,
     comboClass: "fade-in",
@@ -130,6 +148,7 @@ const useWorkout = () => {
             },
             completeWorkout: function () {
                 workoutActions.sounds.playBell(0.9);
+                console.log(workout.maneuverTracker)
                 setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
             },
             stopWorkout: function () {
@@ -156,12 +175,27 @@ const useWorkout = () => {
                 const roll = Math.ceil(Math.random() * 100);
                 const followup = newCombo.followups[Math.floor(Math.random() * newCombo.followups.length)]
                 const showFollowup = roll <= workout.followupChance
+
                 let followupClass = ""
+
+                let newValue = workout.maneuverTracker;
+
+                newCombo.sequence.forEach(item => {
+                    newValue[item] = newValue[item] + 1
+                })
+
                 if (showFollowup) {
                     followupClass = "activated"
+                    followup.forEach(item => {
+                        newValue[item] = newValue[item] + 1;
+                    })
                     setTimeout(() => workoutActions.sounds.playPowerup(), 500)
                 }
-                return setWorkout({ ...workout, currentTime: workout.currentTime - 1, followupClass: followupClass, showFollowup: showFollowup, followup: followup, combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 })
+
+                let newState = { ...workout, currentTime: workout.currentTime - 1, maneuverTracker: newValue, followupClass: followupClass, showFollowup: showFollowup, followup: followup, combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 };
+
+
+                return setWorkout(newState)
             },
             hideCombo: function () {
                 setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: "", currentTime: workout.currentTime - 1 })
