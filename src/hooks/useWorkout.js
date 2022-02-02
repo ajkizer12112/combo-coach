@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import bellSound from "../utils/sounds/boxing-bell.mp3"
 import warningSound from '../utils/sounds/boxing-hit.wav'
 import powerupSound from '../utils/sounds/powerup.mp3'
 import { combos } from '../combinations/fundamentals'
+import { AccountContext } from '../context/AccountContext'
 
 
 
@@ -29,7 +30,6 @@ const initialState = {
     rate: 3,
     followupChance: 70,
     comboStartTime: null,
-
     timerActive: false,
     isComplete: false,
     inProgress: false,
@@ -182,22 +182,7 @@ const useWorkout = () => {
         },
     }
 
-    useEffect(() => {
-        let timerId;
-        workoutActions.timer.runWarningChecks();
-        if (workout.timerActive) {
-            if (workout.currentTime === 0) {
-                workoutActions.timer.runZero();
-            }
 
-            const timeout = () => setTimeout(() => workoutActions.timer.decrementTimer(), 1000);
-            timerId = timeout();
-        }
-
-        return () => {
-            clearTimeout(timerId)
-        }
-    }, [workout])
 
     return { workout, workoutActions }
 }

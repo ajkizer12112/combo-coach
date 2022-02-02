@@ -9,14 +9,6 @@ const jsonHeader = {
     },
 };
 
-const setAuthToken = (token) => {
-    if (token) {
-        axios.defaults.headers.common["x-auth-token"] = token;
-    } else {
-        delete axios.defaults.headers.common["x-auth-token"];
-    }
-};
-
 
 const useAccount = () => {
     const [account, setAccount] = useState({
@@ -24,6 +16,16 @@ const useAccount = () => {
         token: null,
         currentUser: {},
     });
+
+
+    const setAuthToken = (token) => {
+        if (token) {
+            axios.defaults.headers.common["x-auth-token"] = token;
+        } else {
+            delete axios.defaults.headers.common["x-auth-token"];
+        }
+    };
+
 
     const [userStats, setUserStats] = useState({
         roundsCompleted: null
@@ -73,11 +75,21 @@ const useAccount = () => {
             try {
                 const info = await axios.get(`${mainRoot}/profiles/${id}`);
                 if (!info) {
-                    const newProfile = await axios.post(`${mainRoot}/profiles`, { account_id: id })
+                    const newProfile = await axios.post(`${mainRoot}/profiles`, { account_id: id }, jsonHeader)
                     setUserStats({ ...userStats, roundsCompleted: newProfile.data.data.roundsCompleted })
                 } else {
                     setUserStats({ ...userStats, roundsCompleted: info.data.data.roundsCompleted })
                 }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        completeWorkout: async (data) => {
+            try {
+                const { roundsCompleted } = data
+                await axios.put(`${mainRoot}/profiles`, { roundsCompleted }, jsonHeader);
+                console.log("done")
+                setUserStats({ ...userStats, roundsCompleted: userStats.roundsCompleted + roundsCompleted })
             } catch (error) {
                 console.log(error);
             }
