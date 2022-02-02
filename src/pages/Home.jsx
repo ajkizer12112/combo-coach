@@ -9,6 +9,7 @@ import WorkoutDisplay from '../components/sections/WorkoutDisplay'
 import Lights from '../components/sections/Lights'
 import Auth from '../components/forms/containers/Auth'
 import { AccountContext } from '../context/AccountContext'
+import UserInfo from '../components/sections/UserInfo'
 
 
 const Home = () => {
@@ -46,7 +47,7 @@ const Home = () => {
                         </div>
                     </ModalWrapper>
                     <ModalWrapper closeModal={closeLoginModal} showModal={showLogin}>
-                        {account.isAuthenticated ? <>{account.currentUser.username}</> : <Auth />}
+                        {account.isAuthenticated ? <UserInfo /> : <Auth />}
                     </ModalWrapper>
 
                 </section  > : "loading"

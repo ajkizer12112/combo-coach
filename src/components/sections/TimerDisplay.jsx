@@ -9,22 +9,19 @@ const TimerDisplay = () => {
     useEffect(() => {
         let timerId;
         workoutActions.timer.runWarningChecks();
-        if (workout.timerActive) {
+        if (!workout.timerActive) return
 
-            if (workout.currentTime === 0) {
-                workoutActions.timer.runZero();
-                if (workout.currentRound === workout.totalRounds) {
-                    const data = {
-                        roundsCompleted: workout.totalRounds
-                    }
-                    profileFns.completeWorkout(data)
-                    console.log("done")
+        if (workout.currentTime === 0) {
+            workoutActions.timer.runZero();
+            if (workout.currentRound === workout.totalRounds) {
+                const data = {
+                    roundsCompleted: workout.totalRounds
                 }
+                profileFns.completeWorkout(data)
             }
-
-            const timeout = () => setTimeout(() => workoutActions.timer.decrementTimer(), 1);
-            timerId = timeout();
         }
+        const timeout = () => setTimeout(() => workoutActions.timer.decrementTimer(), 1);
+        timerId = timeout();
 
         return () => {
             clearTimeout(timerId)
