@@ -1,6 +1,4 @@
 import React from 'react'
-import { useContext } from 'react/cjs/react.development'
-import { WorkoutContext } from '../../context/WorkoutContext'
 import Dropdown from '../Dropdown'
 import { combos } from '../../combinations/fundamentals'
 
