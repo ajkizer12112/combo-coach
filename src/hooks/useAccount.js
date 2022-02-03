@@ -28,7 +28,8 @@ const useAccount = () => {
 
 
     const [userStats, setUserStats] = useState({
-        roundsCompleted: null
+        roundsCompleted: null,
+        maneuverTracker: {}
     });
 
     const authenticationFns = {
@@ -78,7 +79,7 @@ const useAccount = () => {
                     const newProfile = await axios.post(`${mainRoot}/profiles`, { account_id: id }, jsonHeader)
                     setUserStats({ ...userStats, roundsCompleted: newProfile.data.data.roundsCompleted })
                 } else {
-                    setUserStats({ ...userStats, roundsCompleted: info.data.data.roundsCompleted })
+                    setUserStats({ ...userStats, roundsCompleted: info.data.data.roundsCompleted, maneuverTracker: info.data.data.maneuverTracker })
                 }
             } catch (error) {
                 console.log(error);
@@ -86,10 +87,10 @@ const useAccount = () => {
         },
         completeWorkout: async (data) => {
             try {
-                const { roundsCompleted } = data
-                await axios.put(`${mainRoot}/profiles`, { roundsCompleted }, jsonHeader);
-                console.log("done")
-                setUserStats({ ...userStats, roundsCompleted: userStats.roundsCompleted + roundsCompleted })
+                const { roundsCompleted, maneuverTracker } = data
+                const profile = await axios.put(`${mainRoot}/profiles`, { roundsCompleted, maneuverTracker }, jsonHeader);
+                console.log(profile.data.data);
+                setUserStats({ ...userStats, roundsCompleted: userStats.roundsCompleted + roundsCompleted, maneuverTracker: profile.data.data.maneuverTracker })
             } catch (error) {
                 console.log(error);
             }

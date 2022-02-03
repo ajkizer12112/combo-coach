@@ -15,7 +15,8 @@ const TimerDisplay = () => {
             workoutActions.timer.runZero();
             if (workout.currentRound === workout.totalRounds) {
                 const data = {
-                    roundsCompleted: workout.totalRounds
+                    roundsCompleted: workout.totalRounds,
+                    maneuverTracker: workout.maneuverTracker
                 }
                 profileFns.completeWorkout(data)
             }
