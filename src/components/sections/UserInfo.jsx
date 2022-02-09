@@ -31,8 +31,6 @@ const UserInfo = () => {
         else if (valArr[0] === "6") maneuver = createString(valArr, "Rear Uppercut")
         else maneuver = key
 
-
-
         return `${maneuver}: ${userStats.maneuverTracker[key]}`
     });
 
