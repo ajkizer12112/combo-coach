@@ -1,12 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { AccountContext } from '../../../context/AccountContext'
 
-const Login = () => {
+const Login = ({ closeModal }) => {
     const [formData, setFormData] = useState({
         username: "",
         password: ""
     })
-
     const { authenticationFns: { login } } = useContext(AccountContext)
 
     const { username, password } = formData;
@@ -18,6 +17,7 @@ const Login = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         login(formData);
+        closeModal();
     }
     return (
         <form onSubmit={submitHandler}>

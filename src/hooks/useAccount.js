@@ -46,6 +46,18 @@ const useAccount = () => {
             }
         },
 
+        register: async (body) => {
+            try {
+                const URL = `${mainRoot}/auth/register`;
+                const res = await axios.post(URL, body, jsonHeader);
+                setAccount({ ...account, isAuthenticated: true, token: res.data.token, currentUser: res.data.user })
+                authenticationFns.getCurrentUser();
+                localStorage.setItem("boxing-timer-token", res.data.token)
+            } catch (error) {
+                console.log({ error })
+            }
+        },
+
         getCurrentUser: async () => {
             try {
                 const URL = `${mainRoot}/auth/me`

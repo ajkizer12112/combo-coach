@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AccountContext } from '../../../context/AccountContext';
 
-const Register = () => {
+const Register = ({ closeModal }) => {
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -8,13 +9,22 @@ const Register = () => {
         passwordConfirm: ""
     })
 
+    const { authenticationFns: { register } } = useContext(AccountContext)
+
     const { username, password, passwordConfirm, email } = formData;
 
     const changeHandler = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
+
+    const submitHandler = e => {
+        e.preventDefault();
+        register(formData);
+        closeModal();
+    }
+
     return (
-        <form>
+        <form onSubmit={submitHandler}>
             <div className="field">
                 <label className="label">Username</label>
                 <div className="control">

@@ -49,7 +49,7 @@ const Home = () => {
                         </div>
                     </ModalWrapper>
                     <ModalWrapper closeModal={closeLoginModal} showModal={showLogin}>
-                        {account.isAuthenticated ? <UserInfo /> : <Auth />}
+                        {account.isAuthenticated ? <UserInfo /> : <Auth closeModal={closeLoginModal} />}
                     </ModalWrapper>
 
                 </section  > : "loading"

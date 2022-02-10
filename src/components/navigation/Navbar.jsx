@@ -8,7 +8,7 @@ const Navbar = ({ toggleLoginModal }) => {
         <nav className="navbar has-shadow p-3">
             <div className="navbar-start"></div>
             <div className="navbar-end">
-                <span onClick={() => toggleLoginModal(true)}>{account.isAuthenticated ? "My Account" : "Sign In"}</span>
+                <span className="mr-2" onClick={() => toggleLoginModal(true)}>{account.isAuthenticated ? "My Account" : "Sign In"}</span>
                 {account.isAuthenticated && <span onClick={() => authenticationFns.logout()}>Logout</span>}
             </div>
         </nav>
