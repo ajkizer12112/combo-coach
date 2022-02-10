@@ -4,6 +4,8 @@ import { AccountContext } from '../../context/AccountContext';
 const UserInfo = () => {
     const { account, userStats } = useContext(AccountContext)
 
+    console.log(userStats);
+
 
     const createString = (valArr, name) => {
         let string;
@@ -16,14 +18,15 @@ const UserInfo = () => {
         return string
     }
 
-    const offenseTextArr = Object.keys(userStats.maneuverTracker).map(key => {
+    const offensiveKeys = ["1", "1b", "2", "2b", "3", "3b", "4", "4b", "5", "5b", '6', "6b", "Pull", "Slip", "Duck", "Roll"]
+
+
+    const offenseTextArr = offensiveKeys.map(key => {
         let maneuver;
 
-        const valArr = key.split("")
-        const nonNumbers = ["Pull", "Duck", "Roll", "Slip"]
 
-        if (nonNumbers.includes(key)) return
-        else if (valArr[0] === "1") maneuver = createString(valArr, "Jab")
+        const valArr = key.split("")
+        if (valArr[0] === "1") maneuver = createString(valArr, "Jab")
         else if (valArr[0] === "2") maneuver = createString(valArr, "Rear Straight")
         else if (valArr[0] === "3") maneuver = createString(valArr, "Lead Hook")
         else if (valArr[0] === "4") maneuver = createString(valArr, "Rear Hook")
@@ -31,21 +34,21 @@ const UserInfo = () => {
         else if (valArr[0] === "6") maneuver = createString(valArr, "Rear Uppercut")
         else maneuver = key
 
-        return `${maneuver}: ${userStats.maneuverTracker[key]}`
+
+        const numText = userStats.maneuverTracker[key] ? userStats.maneuverTracker[key] : "0"
+
+        return `${maneuver}: ${numText}`
     });
 
 
-    const defenseTextArr = ["Pull", "Duck", "Roll", "Slip"].map(item => {
-        return `${item}: ${userStats.maneuverTracker[item]}`
-    })
 
     return (
         <div>
             <p></p>
             <p>Lifetime Rounds Completed: {userStats.roundsCompleted}</p>
 
-            {offenseTextArr.sort().map(item => <p key={(Math.random() * 999999999999).toString() + item}>{item}</p>)}
-            {defenseTextArr.map(item => <p key={(Math.random() * 999999999999).toString() + item}>{item}</p>)}
+            {offenseTextArr.map(item => <p key={(Math.random() * 999999999999).toString() + item}>{item}</p>)}
+
         </div>
     )
 };

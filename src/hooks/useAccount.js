@@ -28,7 +28,7 @@ const useAccount = () => {
 
 
     const [userStats, setUserStats] = useState({
-        roundsCompleted: null,
+        roundsCompleted: 0,
         maneuverTracker: {}
     });
 
@@ -91,7 +91,7 @@ const useAccount = () => {
                 const info = await axios.get(`${mainRoot}/profiles/${id}`);
                 if (!info) {
                     const newProfile = await axios.post(`${mainRoot}/profiles`, { account_id: id }, jsonHeader)
-                    setUserStats({ ...userStats, roundsCompleted: newProfile.data.data.roundsCompleted })
+                    setUserStats({ ...userStats, roundsCompleted: newProfile.data.data.roundsCompleted, maneuverTracker: newProfile.data.data.maneuverTracker })
                 } else {
                     setUserStats({ ...userStats, roundsCompleted: info.data.data.roundsCompleted, maneuverTracker: info.data.data.maneuverTracker })
                 }
@@ -103,7 +103,6 @@ const useAccount = () => {
             try {
                 const { roundsCompleted, maneuverTracker } = data
                 const profile = await axios.put(`${mainRoot}/profiles`, { roundsCompleted, maneuverTracker }, jsonHeader);
-                console.log(profile.data.data);
                 setUserStats({ ...userStats, roundsCompleted: userStats.roundsCompleted + roundsCompleted, maneuverTracker: profile.data.data.maneuverTracker })
             } catch (error) {
                 console.log(error);
