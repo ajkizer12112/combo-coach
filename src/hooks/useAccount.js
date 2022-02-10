@@ -37,7 +37,9 @@ const useAccount = () => {
             try {
                 const URL = `${mainRoot}/auth/login`;
                 const res = await axios.post(URL, body, jsonHeader);
+                console.log(res.data);
                 setAccount({ ...account, isAuthenticated: true, token: res.data.token, currentUser: res.data.user })
+                authenticationFns.getCurrentUser();
                 localStorage.setItem("boxing-timer-token", res.data.token)
             } catch (error) {
                 console.log({ error });
@@ -58,7 +60,7 @@ const useAccount = () => {
 
         logout: () => {
             localStorage.removeItem("boxing-timer-token");
-            setAccount({ ...account, isAuthenticated: false })
+            setAccount({ ...account, token: null, user: {}, isAuthenticated: false })
         },
 
         authenticateUser: async () => {

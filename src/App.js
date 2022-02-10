@@ -12,6 +12,7 @@ function App() {
   return (
     <ContextProvider>
       <div className="App">
+
         <Home />
       </div>
     </ContextProvider>

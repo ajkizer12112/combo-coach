@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import useAuth from '../../../hooks/useAccount';
+import React, { useState, useContext } from 'react';
+import { AccountContext } from '../../../context/AccountContext'
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -7,7 +7,7 @@ const Login = () => {
         password: ""
     })
 
-    const { login } = useAuth();
+    const { authenticationFns: { login } } = useContext(AccountContext)
 
     const { username, password } = formData;
 

@@ -10,6 +10,7 @@ import Lights from '../components/sections/Lights'
 import Auth from '../components/forms/containers/Auth'
 import { AccountContext } from '../context/AccountContext'
 import UserInfo from '../components/sections/UserInfo'
+import Navbar from '../components/navigation/Navbar'
 
 
 const Home = () => {
@@ -31,6 +32,7 @@ const Home = () => {
     console.log({ userStats })
     return (
         <main className="has-background-dark">
+            <Navbar toggleLoginModal={toggleLoginModal} />
             {!loading ?
                 <section className=" mx-auto columns section is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
                     <div className="column has-background-grey-dark  is-centered has-text-centered has-text-light columns is-multiline is-mobile is-10 mx-auto">
@@ -39,7 +41,7 @@ const Home = () => {
                         <TimerDisplay />
                         <TimerControls openModal={openOptionsModal} />
                     </div>
-                    <button className="button" onClick={() => toggleLoginModal(true)}>My Account</button>
+
                     <ModalWrapper closeModal={closeOptionsModal} showModal={showOptionsModal}>
                         <Options />
                         <div className="has-text-centered">

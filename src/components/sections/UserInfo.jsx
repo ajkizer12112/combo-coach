@@ -41,11 +41,11 @@ const UserInfo = () => {
 
     return (
         <div>
-            <p>{account.currentUser.username}</p>
+            <p></p>
             <p>Lifetime Rounds Completed: {userStats.roundsCompleted}</p>
 
-            {offenseTextArr.sort().map(item => <p key={Math.random() * 999999999999 + item}>{item}</p>)}
-            {defenseTextArr.map(item => <p key={Math.random() * 999999999999 + item}>{item}</p>)}
+            {offenseTextArr.sort().map(item => <p key={(Math.random() * 999999999999).toString() + item}>{item}</p>)}
+            {defenseTextArr.map(item => <p key={(Math.random() * 999999999999).toString() + item}>{item}</p>)}
         </div>
     )
 };
