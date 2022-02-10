@@ -10,12 +10,19 @@ const jsonHeader = {
 };
 
 
+const accountInitialState = {
+    isAuthenticated: false,
+    token: null,
+    currentUser: {}
+}
+
+const profileInitialState = {
+    roundsCompleted: 0,
+    maneuverTracker: {},
+}
+
 const useAccount = () => {
-    const [account, setAccount] = useState({
-        isAuthenticated: false,
-        token: null,
-        currentUser: {},
-    });
+    const [account, setAccount] = useState(accountInitialState);
 
 
     const setAuthToken = (token) => {
@@ -27,20 +34,18 @@ const useAccount = () => {
     };
 
 
-    const [userStats, setUserStats] = useState({
-        roundsCompleted: 0,
-        maneuverTracker: {}
-    });
+    const [userStats, setUserStats] = useState(profileInitialState);
 
     const authenticationFns = {
         login: async (body) => {
             try {
                 const URL = `${mainRoot}/auth/login`;
                 const res = await axios.post(URL, body, jsonHeader);
-                console.log(res.data);
+                localStorage.setItem("boxing-timer-token", res.data.token)
+                setAuthToken(res.data.token);
                 setAccount({ ...account, isAuthenticated: true, token: res.data.token, currentUser: res.data.user })
                 authenticationFns.getCurrentUser();
-                localStorage.setItem("boxing-timer-token", res.data.token)
+
             } catch (error) {
                 console.log({ error });
             }
@@ -50,9 +55,10 @@ const useAccount = () => {
             try {
                 const URL = `${mainRoot}/auth/register`;
                 const res = await axios.post(URL, body, jsonHeader);
+                localStorage.setItem("boxing-timer-token", res.data.token)
+                setAuthToken(res.data.token);
                 setAccount({ ...account, isAuthenticated: true, token: res.data.token, currentUser: res.data.user })
                 authenticationFns.getCurrentUser();
-                localStorage.setItem("boxing-timer-token", res.data.token)
             } catch (error) {
                 console.log({ error })
             }
@@ -73,6 +79,7 @@ const useAccount = () => {
         logout: () => {
             localStorage.removeItem("boxing-timer-token");
             setAccount({ ...account, token: null, user: {}, isAuthenticated: false })
+            setUserStats(profileInitialState)
         },
 
         authenticateUser: async () => {

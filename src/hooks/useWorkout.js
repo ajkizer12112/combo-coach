@@ -20,7 +20,7 @@ const comboIndex = Math.floor(Math.random() * combos[0].combos.length)
 
 const initialState = {
     currentRound: 1,
-    totalRounds: 3,
+    totalRounds: 2,
     roundTime: 180,
     currentTime: 180,
     roundWarningInterval: 10,
@@ -104,9 +104,7 @@ const useWorkout = () => {
                 })
             },
             runZero: function () {
-                if (workout.currentRound >= workout.totalRounds) {
-                    workoutActions.workoutFns.completeWorkout();
-                }
+                if (workout.currentRound >= workout.totalRounds) workoutActions.workoutFns.completeWorkout();
                 else if (workout.currentPhase === "REST") workoutActions.workoutFns.changeRound();
                 else if (workout.currentPhase === "COUNTDOWN") workoutActions.workoutFns.endCountdown();
                 else if (workout.currentPhase === "WORK") workoutActions.workoutFns.startRest();
