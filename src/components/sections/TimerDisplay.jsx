@@ -21,7 +21,7 @@ const TimerDisplay = () => {
                 profileFns.completeWorkout(data)
             }
         }
-        const timeout = () => setTimeout(() => workoutActions.timer.decrementTimer(), 1);
+        const timeout = () => setTimeout(() => workoutActions.timer.decrementTimer(), 10);
         timerId = timeout();
 
         return () => {

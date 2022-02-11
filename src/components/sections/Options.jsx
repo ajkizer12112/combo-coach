@@ -1,12 +1,13 @@
 import React from 'react'
-import Dropdown from '../Dropdown'
+import Dropdown from '../inputs/Dropdown'
 import { combos } from '../../combinations/fundamentals'
 
 
-const rounds = [3, 4, 6, 8, 10, 12, 24, Infinity];
+const rounds = [1, 3, 4, 6, 8, 10, 12, 24];
 const restTimes = [30, 45, 60];
 const roundTimes = [120, 180, 300];
-const workoutRates = [5, 4, 3, 2];
+const workoutRates = [8, 6, 5, 4];
+const followupRates = [30, 40, 55, 70];
 
 const dropdowns = [
     {
@@ -20,11 +21,6 @@ const dropdowns = [
         dropdownOption: "restTime"
     },
     {
-        title: "Combo Rate",
-        items: workoutRates,
-        dropdownOption: "rate"
-    },
-    {
         title: "Round Time",
         items: roundTimes,
         dropdownOption: "roundTime"
@@ -33,7 +29,17 @@ const dropdowns = [
         title: "Combos",
         items: combos,
         dropdownOption: "combos"
-    }
+    },
+    {
+        title: "Combo Rate",
+        items: workoutRates,
+        dropdownOption: "rate"
+    },
+    {
+        title: "Followup Frequency",
+        items: followupRates,
+        dropdownOption: "followupChance"
+    },
 ]
 
 const Options = () => {

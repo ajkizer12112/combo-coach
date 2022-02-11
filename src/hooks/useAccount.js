@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { mainRoot } from '../urls/Auth';
+import { useState } from 'react';
+import { mainRoot } from '../urls/mainApi';
 import axios from 'axios';
 
 

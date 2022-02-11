@@ -12,6 +12,7 @@
     "react-scripts": "^3.0.1",
     "web-vitals": "^2.1.3"
   },
+  "proxy": "https://boxing-timer-express.herokuapp.com/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

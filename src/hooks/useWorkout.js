@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react'
+import { useState } from 'react'
 import bellSound from "../utils/sounds/boxing-bell.mp3"
 import warningSound from '../utils/sounds/boxing-hit.wav'
 import powerupSound from '../utils/sounds/powerup.mp3'
 import { combos } from '../combinations/fundamentals'
-import { AccountContext } from '../context/AccountContext'
+
 
 
 
@@ -20,15 +20,15 @@ const comboIndex = Math.floor(Math.random() * combos[0].combos.length)
 
 const initialState = {
     currentRound: 1,
-    totalRounds: 2,
+    totalRounds: 1,
     roundTime: 180,
     currentTime: 180,
     roundWarningInterval: 10,
     restTime: 60,
     countDown: 5,
     roundChangeWarning: 10,
-    rate: 3,
-    followupChance: 70,
+    rate: 8,
+    followupChance: 30,
     comboStartTime: null,
     timerActive: false,
     isComplete: false,
@@ -55,7 +55,7 @@ const initialState = {
         "Pull": 0,
         "Slip": 0,
         "Roll": 0,
-        "Duck": 0
+        "Duck": 0,
     },
 
     currentPhase: INACTIVE,
@@ -104,7 +104,7 @@ const useWorkout = () => {
                 })
             },
             runZero: function () {
-                if (workout.currentRound >= workout.totalRounds) workoutActions.workoutFns.completeWorkout();
+                if (workout.currentRound >= workout.totalRounds && workout.currentPhase !== "COUNTDOWN") workoutActions.workoutFns.completeWorkout();
                 else if (workout.currentPhase === "REST") workoutActions.workoutFns.changeRound();
                 else if (workout.currentPhase === "COUNTDOWN") workoutActions.workoutFns.endCountdown();
                 else if (workout.currentPhase === "WORK") workoutActions.workoutFns.startRest();
@@ -179,6 +179,7 @@ const useWorkout = () => {
                 let newValue = workout.maneuverTracker;
 
                 newCombo.sequence.forEach(item => {
+                    if (item === "Pivot") return
                     newValue[item] = newValue[item] + 1
                 })
 

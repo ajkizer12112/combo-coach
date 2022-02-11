@@ -15,7 +15,7 @@ import Navbar from '../components/navigation/Navbar'
 
 const Home = () => {
     const { dropdownActions } = useContext(DropdownContext);
-    const { account, authenticationFns, userStats, profileFns } = useContext(AccountContext);
+    const { account, authenticationFns } = useContext(AccountContext);
     const [loading, setLoading] = useState(true);
 
     const [showLogin, toggleLoginModal] = useState(false);
@@ -29,7 +29,6 @@ const Home = () => {
         setLoading(false);
     }, []);
 
-    console.log({ userStats })
     return (
         <main className="has-background-dark">
             <Navbar toggleLoginModal={toggleLoginModal} />

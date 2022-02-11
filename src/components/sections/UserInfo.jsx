@@ -1,8 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { AccountContext } from '../../context/AccountContext';
 
 const UserInfo = () => {
-    const { account, userStats } = useContext(AccountContext)
+    const { userStats } = useContext(AccountContext)
 
     console.log(userStats);
 
@@ -18,7 +18,7 @@ const UserInfo = () => {
         return string
     }
 
-    const offensiveKeys = ["1", "1b", "2", "2b", "3", "3b", "4", "4b", "5", "5b", '6', "6b", "Pull", "Slip", "Duck", "Roll"]
+    const offensiveKeys = ["1", "1b", "2", "2b", "3", "3b", "4", "4b", "5", "5b", '6', "6b", "Pull", "Slip", "Duck", "Roll", "Pivot"]
 
 
     const offenseTextArr = offensiveKeys.map(key => {
