@@ -6,10 +6,10 @@ import Register from '../formTypes/Register';
 const Auth = ({ closeModal }) => {
     const [hasAccount, setHasAccount] = useState(true);
     return (
-        <CardWrapper>
+        <>
             {hasAccount ? <Login closeModal={closeModal} /> : <Register closeModal={closeModal} />}
             <small onClick={() => setHasAccount(!hasAccount)}>{hasAccount ? "I don't have an account" : "I have an account"}</small>
-        </CardWrapper>
+        </>
     )
 };
 
