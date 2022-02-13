@@ -21,7 +21,8 @@ const TimerDisplay = () => {
                 profileFns.completeWorkout(data)
             }
         }
-        const timeout = () => setTimeout(() => workoutActions.timer.decrementTimer(), 10);
+
+        const timeout = () => setTimeout(() => workoutActions.timer.decrementTimer(), 1000);
         timerId = timeout();
 
         return () => {
@@ -30,6 +31,7 @@ const TimerDisplay = () => {
     }, [workout])
 
     return <div className="column is-12 has-font-8bit">
+        <p className="is-size-6 mb-2 has-font-8bit">Round:{workout.currentRound}/{workout.totalRounds === Infinity ? "unlimited" : workout.totalRounds}</p>
         <p className="is-size-2">
             {workoutActions.timer.convertToTime(workout.currentTime)}
         </p>

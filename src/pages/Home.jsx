@@ -33,12 +33,16 @@ const Home = () => {
         <main className="has-background-dark">
             <Navbar toggleLoginModal={toggleLoginModal} />
             {!loading ?
-                <section className=" mx-auto columns section is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
-                    <div className="column has-background-grey-dark  is-centered has-text-centered has-text-light columns is-multiline is-mobile is-10 mx-auto">
-                        <Lights />
-                        <WorkoutDisplay />
+                <section className="mx-auto columns section is-centered is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
+                    <Lights />
+
+                    <div className="column mt-3 p-6 is-rounded has-background-grey-dark is-centered has-text-centered has-text-light columns is-multiline is-mobile is-10 mx-auto">
                         <TimerDisplay />
                         <TimerControls openModal={openOptionsModal} />
+                    </div>
+
+                    <div className="column is-12 has-text-white has-text-centered">
+                        <WorkoutDisplay />
                     </div>
 
                     <ModalWrapper closeModal={closeOptionsModal} showModal={showOptionsModal}>

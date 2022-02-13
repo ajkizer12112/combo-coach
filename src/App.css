@@ -30,18 +30,18 @@ main {
     max-width: 1440px;
 }
 
-.button-container button {
-    margin-bottom: 1rem;
+.is-rounded {
+    border-radius: 50px;
 }
 
 .light {
-    width: 40%;
     height: 50px;
-    opacity: .5;
+    width:100%;
+    opacity: .2;
 }
 
 .light-active {
-    opacity: 1
+    opacity: 1;
 }
 
 .section {
@@ -50,8 +50,9 @@ main {
 }
 
 .button {
-    padding: 1.5rem 2rem;
-    margin: 0 .25rem;
+    padding: 1rem 1.25rem;
+    margin: .25rem;
+    font-size: .75rem;
 }
 
 .fade-in {
