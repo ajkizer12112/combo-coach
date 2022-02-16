@@ -67,7 +67,7 @@ const Dropdown = ({ menuAttr }) => {
                 <div className="dropdown-menu" id="dropdown-menu" role="menu">
                     <div className="dropdown-content">
 
-                        {items.map(item => <a href="*" onClick={() => workoutFns.changeOptions(dropdownOption, item)} key={`${item}-dropdown-${title}-${Math.random() * 9999999999}`} href="#" className="dropdown-item  has-font-8bit ">
+                        {items.map(item => <a href="*" onClick={() => workoutFns.changeOptions(dropdownOption, item)} key={`${item}-dropdown-${title}-${Math.random() * 9999999999}`} className="dropdown-item  has-font-8bit ">
                             {genText(dropdownOption, item)}
                         </a>)}
 

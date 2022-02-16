@@ -5,7 +5,7 @@ import StatusText from './StatusText';
 const Lights = () => {
     const { workout } = useContext(WorkoutContext)
     return (
-        <div className="columns column is-6 is-multiline is-mobile is-centered">
+        <div className="columns column is-10 is-multiline is-mobile is-centered">
             <div className="column is-10 has-text-centered">
                 <StatusText />
             </div>

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import CardWrapper from '../../cards/CardWrapper';
+import React, { useContext, useState } from 'react';
 import Login from '../formTypes/Login';
 import Register from '../formTypes/Register';
+import { ModalContext } from '../../../context/ModalContext';
 
-const Auth = ({ closeModal }) => {
+const Auth = () => {
     const [hasAccount, setHasAccount] = useState(true);
+    const { modalActions } = useContext(ModalContext)
+    const closeModal = () => modalActions.closeModal("account")
     return (
         <>
             {hasAccount ? <Login closeModal={closeModal} /> : <Register closeModal={closeModal} />}

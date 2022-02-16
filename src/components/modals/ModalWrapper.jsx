@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import CardWrapper from '../cards/CardWrapper'
+import { ModalContext } from '../../context/ModalContext'
 
-const ModalWrapper = ({ children, closeModal, showModal }) => {
+const ModalWrapper = ({ children, modalName }) => {
+    const { modals, modalActions } = useContext(ModalContext)
+    const closeModal = () => modalActions.closeModal(modalName)
+
     return (
-        <div className={`modal${!showModal ? "" : " is-active"}`}>
+        <div className={`modal${!modals[modalName] ? "" : " is-active"}`}>
             <div className="modal-background" onClick={closeModal}></div>
             <div className="modal-content">
                 <CardWrapper>

@@ -11,18 +11,15 @@ import Auth from '../components/forms/containers/Auth'
 import { AccountContext } from '../context/AccountContext'
 import UserInfo from '../components/sections/UserInfo'
 import Navbar from '../components/navigation/Navbar'
+import { ModalContext } from '../context/ModalContext'
 
 
 const Home = () => {
     const { dropdownActions } = useContext(DropdownContext);
     const { account, authenticationFns } = useContext(AccountContext);
+    const { modals, modalActions } = useContext(ModalContext)
     const [loading, setLoading] = useState(true);
 
-    const [showLogin, toggleLoginModal] = useState(false);
-    const [showOptionsModal, toggleOptionsModal] = useState(false);
-    const closeOptionsModal = () => toggleOptionsModal(false);
-    const openOptionsModal = () => toggleOptionsModal(true);
-    const closeLoginModal = () => toggleLoginModal(false);
 
     useEffect(() => {
         authenticationFns.authenticateUser();
@@ -31,28 +28,27 @@ const Home = () => {
 
     return (
         <main className="has-background-dark">
-            <Navbar toggleLoginModal={toggleLoginModal} />
+            <Navbar />
             {!loading ?
                 <section className="mx-auto columns section is-centered is-multiline" onClick={() => dropdownActions.closeDropdowns()}>
                     <Lights />
-
-                    <div className="column mt-3 p-6 is-rounded has-background-grey-dark is-centered has-text-centered has-text-light columns is-multiline is-mobile is-10 mx-auto">
+                    <div className="column p-6 is-rounded has-background-grey-dark is-centered has-text-centered has-text-light columns is-multiline is-mobile is-10 mx-auto">
                         <TimerDisplay />
-                        <TimerControls openModal={openOptionsModal} />
+                        <TimerControls />
                     </div>
 
                     <div className="column is-12 has-text-white has-text-centered">
                         <WorkoutDisplay />
                     </div>
 
-                    <ModalWrapper closeModal={closeOptionsModal} showModal={showOptionsModal}>
+                    <ModalWrapper modalName="options">
                         <Options />
                         <div className="has-text-centered">
-                            <button className="button my-6 mx-auto has-font-8bit" onClick={closeOptionsModal}>Save</button>
+                            <button className="button my-6 mx-auto has-font-8bit" onClick={() => modalActions.closeModal("options")}>Save</button>
                         </div>
                     </ModalWrapper>
-                    <ModalWrapper closeModal={closeLoginModal} showModal={showLogin}>
-                        {account.isAuthenticated ? <UserInfo /> : <Auth closeModal={closeLoginModal} />}
+                    <ModalWrapper modalName="account">
+                        {account.isAuthenticated ? <UserInfo /> : <Auth />}
                     </ModalWrapper>
 
                 </section  > : "loading"

@@ -33,7 +33,6 @@ const useAccount = () => {
         }
     };
 
-
     const [userStats, setUserStats] = useState(profileInitialState);
 
     const authenticationFns = {
