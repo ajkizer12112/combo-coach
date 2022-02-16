@@ -24,7 +24,6 @@ const UserInfo = () => {
     const offenseTextArr = offensiveKeys.map(key => {
         let maneuver;
 
-
         const valArr = key.split("")
         if (valArr[0] === "1") maneuver = createString(valArr, "Jab")
         else if (valArr[0] === "2") maneuver = createString(valArr, "Rear Straight")
