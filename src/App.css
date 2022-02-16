@@ -71,6 +71,15 @@ main {
     animation-delay: 500ms;
 }
 
+.modal-content {
+    width: 80%;
+}
+
+@media screen and (max-width: 700px) {
+    .modal-content {
+        width: 100%;
+    }
+}
 @keyframes fade-in {
     from{
         opacity: 0;

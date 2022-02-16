@@ -9,7 +9,7 @@ const ModalWrapper = ({ children, modalName }) => {
     return (
         <div className={`modal${!modals[modalName] ? "" : " is-active"}`}>
             <div className="modal-background" onClick={closeModal}></div>
-            <div className="modal-content">
+            <div className="modal-content has-background-white">
                 <CardWrapper>
                     {children}
                 </CardWrapper>

@@ -1,52 +1,56 @@
 import React, { useContext } from 'react';
 import { AccountContext } from '../../context/AccountContext';
+import { BarChart, XAxis, YAxis, CartesianGrid, Legend, Bar, Tooltip, ResponsiveContainer } from 'recharts';
 
 const UserInfo = () => {
     const { userStats } = useContext(AccountContext)
 
     console.log(userStats);
 
-
-    const createString = (valArr, name) => {
-        let string;
-        if (valArr[1] === "b") {
-            string = `${name} Body`
-        } else {
-            string = `${name} Head`
-        }
-
-        return string
-    }
-
-    const offensiveKeys = ["1", "1b", "2", "2b", "3", "3b", "4", "4b", "5", "5b", '6', "6b", "Pull", "Slip", "Duck", "Roll", "Pivot"]
+    const offensiveKeys = ["1", "2", "3", "4", "5", '6']
 
 
-    const offenseTextArr = offensiveKeys.map(key => {
-        let maneuver;
+    const offenseData = offensiveKeys.map(key => {
+        let name;
+        if (key === "1") name = "Jab";
+        else if (key === "2") name = "Rear Straight";
+        else if (key === "3") name = "Lead Hook";
+        else if (key === "4") name = "Rear Hook";
+        else if (key === "5") name = "Lead Uppercut";
+        else if (key === "6") name = "Rear Uppercut";
+        else name = key
 
-        const valArr = key.split("")
-        if (valArr[0] === "1") maneuver = createString(valArr, "Jab")
-        else if (valArr[0] === "2") maneuver = createString(valArr, "Rear Straight")
-        else if (valArr[0] === "3") maneuver = createString(valArr, "Lead Hook")
-        else if (valArr[0] === "4") maneuver = createString(valArr, "Rear Hook")
-        else if (valArr[0] === "5") maneuver = createString(valArr, "Lead Uppercut")
-        else if (valArr[0] === "6") maneuver = createString(valArr, "Rear Uppercut")
-        else maneuver = key
+        const body = userStats.maneuverTracker[key + "b"] || 0
+        const head = userStats.maneuverTracker[key] || 0
 
-
-        const numText = userStats.maneuverTracker[key] ? userStats.maneuverTracker[key] : "0"
-
-        return `${maneuver}: ${numText}`
-    });
-
+        return { name, body, head }
+    })
 
 
     return (
-        <div>
+        <div className="has-background-white">
             <p></p>
             <p>Lifetime Rounds Completed: {userStats.roundsCompleted}</p>
 
-            {offenseTextArr.map(item => <p key={(Math.random() * 999999999999).toString() + item}>{item}</p>)}
+            <BarChart
+                width={1000}
+                height={300}
+                data={offenseData}
+                margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                }}
+            >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="body" fill="#8884d8" />
+                <Bar dataKey="head" fill="#82ca9d" />
+            </BarChart>
 
         </div>
     )
