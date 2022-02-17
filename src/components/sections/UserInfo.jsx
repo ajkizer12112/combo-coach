@@ -26,12 +26,16 @@ const UserInfo = () => {
         return { name, body, head }
     })
 
+    const defenseKeys = ["Slip", "Pull", "Roll", "Duck"]
+
+    const defenseData = defenseKeys.map(key => {
+        return { name: key, count: userStats.maneuverTracker[key] || 0 }
+    })
 
     return (
-        <div className="has-background-white">
-            <p></p>
+        <div className="has-background-white columns is-multiline">
             <p>Lifetime Rounds Completed: {userStats.roundsCompleted}</p>
-
+            <h3 className="is-size-4">Striking Breakdown</h3>
             <BarChart
                 width={1000}
                 height={300}
@@ -51,7 +55,26 @@ const UserInfo = () => {
                 <Bar dataKey="body" fill="#8884d8" />
                 <Bar dataKey="head" fill="#82ca9d" />
             </BarChart>
+            <h3 className="is-size-4">Defense Breakdown</h3>
+            <BarChart
+                width={500}
+                height={300}
+                data={defenseData}
+                margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                }}
+            >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#8884d8" />
 
+            </BarChart>
         </div>
     )
 };

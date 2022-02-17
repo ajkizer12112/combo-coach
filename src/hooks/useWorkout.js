@@ -4,17 +4,13 @@ import warningSound from '../utils/sounds/boxing-hit.wav'
 import powerupSound from '../utils/sounds/powerup.mp3'
 import { combos } from '../combinations/fundamentals'
 
+import { WORKOUT_STATES, TIME_VALUES, TOGGLEABLE_CLASSES, OPTIONS_FIELD_NAMES } from "../utils/constants"
 
+const { INACTIVE, WORK, COUNTDOWN, REST } = WORKOUT_STATES;
+const { SECONDS_IN_MINUTE } = TIME_VALUES;
+const { NONE, ACTIVATED } = TOGGLEABLE_CLASSES;
+const { ROUND_TIME, TOTAL_ROUNDS, REST_TIME, FOLLOWUP_CHANCE, RATE, COMBOS } = OPTIONS_FIELD_NAMES;
 
-
-const workoutStates = {
-    INACTIVE: "INACTIVE",
-    WORK: "WORK",
-    REST: "REST",
-    COUNTDOWN: "COUNTDOWN"
-}
-
-const { INACTIVE, WORK, COUNTDOWN, REST } = workoutStates;
 
 const comboIndex = Math.floor(Math.random() * combos[0].combos.length)
 
@@ -57,10 +53,8 @@ const initialState = {
         "Roll": 0,
         "Duck": 0,
     },
-
     currentPhase: INACTIVE,
-    comboClass: "fade-in",
-    followupClass: ""
+    followupClass: NONE
 }
 
 
@@ -79,8 +73,8 @@ const useWorkout = () => {
     const workoutActions = {
         timer: {
             convertToTime: function (time) {
-                const minutes = Math.floor(time / 60)
-                let seconds = time - minutes * 60
+                const minutes = Math.floor(time / SECONDS_IN_MINUTE)
+                let seconds = time - minutes * SECONDS_IN_MINUTE
                 if (seconds < 10) seconds = `0${seconds}`
                 return `${minutes}:${seconds}`
             },
@@ -91,7 +85,7 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
-                if (workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === "WORK") {
+                if (workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === WORK) {
                     return workoutActions.workoutFns.activateNextCombo();
                 }
 
@@ -104,27 +98,25 @@ const useWorkout = () => {
                 })
             },
             runZero: function () {
-                if (workout.currentRound >= workout.totalRounds && workout.currentPhase !== "COUNTDOWN") workoutActions.workoutFns.completeWorkout();
-                else if (workout.currentPhase === "REST") workoutActions.workoutFns.changeRound();
-                else if (workout.currentPhase === "COUNTDOWN") workoutActions.workoutFns.endCountdown();
-                else if (workout.currentPhase === "WORK") workoutActions.workoutFns.startRest();
+                if (workout.currentRound >= workout.totalRounds && workout.currentPhase !== COUNTDOWN) workoutActions.workoutFns.completeWorkout();
+                else if (workout.currentPhase === REST) workoutActions.workoutFns.changeRound();
+                else if (workout.currentPhase === COUNTDOWN) workoutActions.workoutFns.endCountdown();
+                else if (workout.currentPhase === WORK) workoutActions.workoutFns.startRest();
+                else return
             },
             runWarningChecks: function () {
-                if (workout.currentTime % 60 === 0 && workout.currentPhase === "WORK") {
-                    if (workout.currentTime !== workout.roundTime) {
+                if (workout.currentTime % SECONDS_IN_MINUTE === 0)
+
+                    if (workout.currentTime % SECONDS_IN_MINUTE === 0 && workout.currentPhase === WORK && workout.currentTime !== workout.roundTime) {
                         workoutActions.sounds.playWarning();
                     }
-                }
-                if (workout.currentPhase === "REST") {
-                    if (workout.currentTime % 60 === 0 && workout.currentTime !== workout.restTime) {
-                        workoutActions.sounds.playWarning();
-                    }
+
+                if (workout.currentPhase === REST && workout.currentTime % SECONDS_IN_MINUTE === 0 && workout.currentTime !== workout.restTime) {
+                    workoutActions.sounds.playWarning();
                 }
 
-                if (workout.currentPhase !== "COUNTDOWN" && workout.currentPhase !== "INACTIVE") {
-                    if (workout.currentTime === 10) {
-                        workoutActions.sounds.playWarning(1200);
-                    }
+                if (workout.currentPhase !== COUNTDOWN && workout.currentPhase !== INACTIVE && workout.currentTime === workout.roundChangeWarning) {
+                    workoutActions.sounds.playWarning(1200);
                 }
             },
         },
@@ -156,9 +148,9 @@ const useWorkout = () => {
                 setWorkout(initialState)
             },
             changeOptions: function (optionName, value) {
-                if (optionName === "combos") {
+                if (optionName === COMBOS) {
                     setWorkout({ ...workout, [optionName]: value, combo: value.combos[0] })
-                } else if (optionName === "roundTime") {
+                } else if (optionName === ROUND_TIME) {
                     setWorkout({ ...workout, [optionName]: value, currentTime: value, timerActive: false, inProgress: false })
                 } else {
                     setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
@@ -174,7 +166,7 @@ const useWorkout = () => {
                 const followup = newCombo.followups[Math.floor(Math.random() * newCombo.followups.length)]
                 const showFollowup = roll <= workout.followupChance
 
-                let followupClass = ""
+                let followupClass = NONE
 
                 let newValue = workout.maneuverTracker;
 
@@ -184,7 +176,7 @@ const useWorkout = () => {
                 })
 
                 if (showFollowup) {
-                    followupClass = "activated"
+                    followupClass = ACTIVATED
                     followup.forEach(item => {
                         newValue[item] = newValue[item] + 1;
                     })
@@ -197,7 +189,7 @@ const useWorkout = () => {
                 return setWorkout(newState)
             },
             hideCombo: function () {
-                setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: "", currentTime: workout.currentTime - 1 })
+                setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: NONE, currentTime: workout.currentTime - 1 })
             }
         },
         sounds: {

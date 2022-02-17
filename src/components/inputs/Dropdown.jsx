@@ -1,35 +1,65 @@
 import React, { useContext } from 'react';
 import { WorkoutContext } from "../../context/WorkoutContext";
 import { DropdownContext } from '../../context/DropdownContext';
+import { DIFFICULTY, OPTIONS_FIELD_NAMES } from '../../utils/constants'
 
 const Dropdown = ({ menuAttr }) => {
     const { workout, workoutActions: { timer, workoutFns } } = useContext(WorkoutContext);
     const { dropdown, dropdownActions } = useContext(DropdownContext);
     const { title, items, dropdownOption } = menuAttr;
 
-    const genText = (dropdownOption, item) => {
+    const { FOLLOWUP_EASY, FOLLOWUP_AMATEUR, FOLLOWUP_PRO, FOLLOWUP_LEGEND } = DIFFICULTY
+    const { TEXT_EASY, TEXT_AMATEUR, TEXT_PRO, TEXT_LEGEND } = DIFFICULTY
+    const { RATE_EASY, RATE_AMATEUR, RATE_PRO, RATE_LEGEND } = DIFFICULTY
+    const { TOTAL_ROUNDS, COMBOS, RATE, FOLLOWUP_CHANCE } = OPTIONS_FIELD_NAMES
+
+    const genText = (dropdownOption, selection) => {
         let rtnVal;
 
-        if (dropdownOption === "totalRounds") {
-            if (item === Infinity) rtnVal = "Unlimited"
-            else rtnVal = item
-        } else if (dropdownOption === "combos") {
-            rtnVal = item.name
-        } else if (dropdownOption === "rate") {
-            if (item === 8) rtnVal = "Easy"
-            else if (item === 6) rtnVal = "Amateur"
-            else if (item === 5) rtnVal = "Pro"
-            else if (item === 4) rtnVal = "Legend"
-            else rtnVal = item
-        } else if (dropdownOption === "followupChance") {
-            if (item === 30) rtnVal = "Easy"
-            else if (item === 40) rtnVal = "Amateur"
-            else if (item === 55) rtnVal = "Pro"
-            else if (item === 70) rtnVal = "Legend"
-        }
+        if (dropdownOption === TOTAL_ROUNDS) {
+            if (selection === Infinity) rtnVal = "Unlimited"
+            else rtnVal = selection
+        } else if (dropdownOption === COMBOS) {
+            rtnVal = selection.name
+        } else if (dropdownOption === RATE) {
+            switch (selection) {
+                case RATE_EASY:
+                    rtnVal = TEXT_EASY
+                    break;
+                case RATE_AMATEUR:
+                    rtnVal = TEXT_AMATEUR
+                    break;
+                case RATE_PRO:
+                    rtnVal = TEXT_PRO
+                    break;
+                case RATE_LEGEND:
+                    rtnVal = TEXT_LEGEND
+                    break;
+                default:
+                    rtnVal = selection
+                    break;
+            }
+        } else if (dropdownOption === FOLLOWUP_CHANCE) {
+            switch (selection) {
+                case FOLLOWUP_EASY:
+                    rtnVal = TEXT_EASY
+                    break;
+                case FOLLOWUP_AMATEUR:
+                    rtnVal = TEXT_AMATEUR
+                    break;
+                case FOLLOWUP_PRO:
+                    rtnVal = TEXT_PRO
+                    break;
+                case FOLLOWUP_LEGEND:
+                    rtnVal = TEXT_LEGEND
+                    break;
+                default:
+                    rtnVal = selection
+                    break;
+            }
 
-        else {
-            rtnVal = timer.convertToTime(item)
+        } else {
+            rtnVal = timer.convertToTime(selection)
         }
 
         return rtnVal
@@ -42,16 +72,16 @@ const Dropdown = ({ menuAttr }) => {
     }
 
     const genTitle = () => {
-        if (dropdownOption === "totalRounds") { return workout[dropdownOption] === Infinity ? "Unlimited" : workout[dropdownOption] }
-        else if (dropdownOption === "combos") return workout.combos.name
-        else if (dropdownOption === "rate") return genText("rate", workout.rate)
-        else if (dropdownOption === "followupChance") return genText("followupChance", workout.followupChance)
+        if (dropdownOption === TOTAL_ROUNDS) { return workout[dropdownOption] === Infinity ? "Unlimited" : workout[dropdownOption] }
+        else if (dropdownOption === COMBOS) return workout.combos.name
+        else if (dropdownOption === RATE) return genText(RATE, workout.rate)
+        else if (dropdownOption === FOLLOWUP_CHANCE) return genText(FOLLOWUP_CHANCE, workout.followupChance)
         else return timer.convertToTime(workout[dropdownOption])
     }
 
     return (
         <>
-            {dropdownOption === "totalRounds" && <p className="mt-6 mb-2 has-font-8bit has-text-centered">WORKOUT SETTINGS</p>}
+            {dropdownOption === TOTAL_ROUNDS && <p className="mt-6 mb-2 has-font-8bit has-text-centered">WORKOUT SETTINGS</p>}
             {dropdownOption === "rate" && <p className="mt-6 mb-2 has-font-8bit has-text-centered">DIFFICULTY</p>}
             <div className={`dropdown mb-4 ${dropdown[dropdownOption] ? "is-active" : ""}`}>
 
@@ -67,8 +97,8 @@ const Dropdown = ({ menuAttr }) => {
                 <div className="dropdown-menu" id="dropdown-menu" role="menu">
                     <div className="dropdown-content">
 
-                        {items.map(item => <a href="*" onClick={() => workoutFns.changeOptions(dropdownOption, item)} key={`${item}-dropdown-${title}-${Math.random() * 9999999999}`} className="dropdown-item  has-font-8bit ">
-                            {genText(dropdownOption, item)}
+                        {items.map(selection => <a href="#" onClick={() => workoutFns.changeOptions(dropdownOption, selection)} key={`${selection}-dropdown-${title}-${Math.random() * 9999999999}`} className="dropdown-item  has-font-8bit ">
+                            {genText(dropdownOption, selection)}
                         </a>)}
 
                     </div>

@@ -1,44 +1,48 @@
 import React from 'react'
 import Dropdown from '../inputs/Dropdown'
 import { combos } from '../../combinations/fundamentals'
+import { OPTIONS_FIELD_NAMES, DIFFICULTY } from '../../utils/constants';
 
+const { RATE_EASY, RATE_AMATEUR, RATE_PRO, RATE_LEGEND } = DIFFICULTY
+const { FOLLOWUP_EASY, FOLLOWUP_AMATEUR, FOLLOWUP_PRO, FOLLOWUP_LEGEND } = DIFFICULTY
+const { ROUND_TIME, TOTAL_ROUNDS, REST_TIME, RATE, FOLLOWUP_CHANCE, COMBOS } = OPTIONS_FIELD_NAMES
 
 const rounds = [1, 3, 4, 6, 8, 10, 12, 24];
 const restTimes = [30, 45, 60];
 const roundTimes = [120, 180, 300];
-const workoutRates = [8, 6, 5, 4];
-const followupRates = [30, 40, 55, 70];
+const workoutRates = [RATE_EASY, RATE_AMATEUR, RATE_PRO, RATE_LEGEND];
+const followupRates = [FOLLOWUP_EASY, FOLLOWUP_AMATEUR, FOLLOWUP_PRO, FOLLOWUP_LEGEND];
 
 const dropdowns = [
     {
         title: "Number of Rounds",
         items: rounds,
-        dropdownOption: "totalRounds"
+        dropdownOption: TOTAL_ROUNDS
     },
     {
         title: "Rest",
         items: restTimes,
-        dropdownOption: "restTime"
+        dropdownOption: REST_TIME
     },
     {
         title: "Round Time",
         items: roundTimes,
-        dropdownOption: "roundTime"
+        dropdownOption: ROUND_TIME
     },
     {
         title: "Combos",
         items: combos,
-        dropdownOption: "combos"
+        dropdownOption: COMBOS
     },
     {
         title: "Combo Rate",
         items: workoutRates,
-        dropdownOption: "rate"
+        dropdownOption: RATE
     },
     {
         title: "Followup Frequency",
         items: followupRates,
-        dropdownOption: "followupChance"
+        dropdownOption: FOLLOWUP_CHANCE
     },
 ]
 
