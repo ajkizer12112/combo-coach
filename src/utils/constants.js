@@ -7,7 +7,7 @@ export const WORKOUT_STATES = Object.freeze({
 })
 
 export const TIME_VALUES = Object.freeze({
-    SECONDS_IN_MINUTE: 60,
+    WARNING_INTERVAL: 60,
 })
 
 export const TOGGLEABLE_CLASSES = Object.freeze({

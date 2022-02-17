@@ -7,7 +7,7 @@ import { combos } from '../combinations/fundamentals'
 import { WORKOUT_STATES, TIME_VALUES, TOGGLEABLE_CLASSES, OPTIONS_FIELD_NAMES } from "../utils/constants"
 
 const { INACTIVE, WORK, COUNTDOWN, REST } = WORKOUT_STATES;
-const { SECONDS_IN_MINUTE } = TIME_VALUES;
+const { WARNING_INTERVAL } = TIME_VALUES;
 const { NONE, ACTIVATED } = TOGGLEABLE_CLASSES;
 const { ROUND_TIME, TOTAL_ROUNDS, REST_TIME, FOLLOWUP_CHANCE, RATE, COMBOS } = OPTIONS_FIELD_NAMES;
 
@@ -19,7 +19,6 @@ const initialState = {
     totalRounds: 1,
     roundTime: 180,
     currentTime: 180,
-    roundWarningInterval: 10,
     restTime: 60,
     countDown: 5,
     roundChangeWarning: 10,
@@ -73,8 +72,8 @@ const useWorkout = () => {
     const workoutActions = {
         timer: {
             convertToTime: function (time) {
-                const minutes = Math.floor(time / SECONDS_IN_MINUTE)
-                let seconds = time - minutes * SECONDS_IN_MINUTE
+                const minutes = Math.floor(time / WARNING_INTERVAL)
+                let seconds = time - minutes * WARNING_INTERVAL
                 if (seconds < 10) seconds = `0${seconds}`
                 return `${minutes}:${seconds}`
             },
@@ -105,13 +104,13 @@ const useWorkout = () => {
                 else return
             },
             runWarningChecks: function () {
-                if (workout.currentTime % SECONDS_IN_MINUTE === 0)
+                if (workout.currentTime % WARNING_INTERVAL === 0)
 
-                    if (workout.currentTime % SECONDS_IN_MINUTE === 0 && workout.currentPhase === WORK && workout.currentTime !== workout.roundTime) {
+                    if (workout.currentTime % WARNING_INTERVAL === 0 && workout.currentPhase === WORK && workout.currentTime !== workout.roundTime) {
                         workoutActions.sounds.playWarning();
                     }
 
-                if (workout.currentPhase === REST && workout.currentTime % SECONDS_IN_MINUTE === 0 && workout.currentTime !== workout.restTime) {
+                if (workout.currentPhase === REST && workout.currentTime % WARNING_INTERVAL === 0 && workout.currentTime !== workout.restTime) {
                     workoutActions.sounds.playWarning();
                 }
 
