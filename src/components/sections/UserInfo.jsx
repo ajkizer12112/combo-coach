@@ -34,47 +34,53 @@ const UserInfo = () => {
 
     return (
         <div className="has-background-white columns is-multiline">
-            <p>Lifetime Rounds Completed: {userStats.roundsCompleted}</p>
-            <h3 className="is-size-4">Striking Breakdown</h3>
-            <BarChart
-                width={1000}
-                height={300}
-                data={offenseData}
-                margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="body" fill="#8884d8" />
-                <Bar dataKey="head" fill="#82ca9d" />
-            </BarChart>
-            <h3 className="is-size-4">Defense Breakdown</h3>
-            <BarChart
-                width={500}
-                height={300}
-                data={defenseData}
-                margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#8884d8" />
+            <div className="column is-12">
+                <p>Lifetime Rounds Completed: {userStats.roundsCompleted}</p>
+            </div>
+            <div className="column is-12">
+                <h3 className="is-size-4">Striking Breakdown</h3>
+                <BarChart
+                    width={1000}
+                    height={300}
+                    data={offenseData}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="body" fill="#8884d8" />
+                    <Bar dataKey="head" fill="#82ca9d" />
+                </BarChart>
+            </div>
+            <div className="column is-12">
+                <h3 className="is-size-4">Defense Breakdown</h3>
+                <BarChart
+                    width={500}
+                    height={300}
+                    data={defenseData}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="count" fill="#8884d8" />
 
-            </BarChart>
+                </BarChart>
+            </div>
         </div>
     )
 };
