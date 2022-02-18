@@ -7,7 +7,7 @@ import { combos } from '../combinations/fundamentals'
 import { WORKOUT_STATES, TIME_VALUES, TOGGLEABLE_CLASSES, OPTIONS_FIELD_NAMES } from "../utils/constants"
 
 const { INACTIVE, WORK, COUNTDOWN, REST } = WORKOUT_STATES;
-const { WARNING_INTERVAL } = TIME_VALUES;
+const { WARNING_INTERVAL, ROUND_CHANGE_WARNING } = TIME_VALUES;
 const { NONE, ACTIVATED } = TOGGLEABLE_CLASSES;
 const { ROUND_TIME, TOTAL_ROUNDS, REST_TIME, FOLLOWUP_CHANCE, RATE, COMBOS } = OPTIONS_FIELD_NAMES;
 
@@ -114,7 +114,7 @@ const useWorkout = () => {
                     workoutActions.sounds.playWarning();
                 }
 
-                if (workout.currentPhase !== COUNTDOWN && workout.currentPhase !== INACTIVE && workout.currentTime === workout.roundChangeWarning) {
+                if (workout.currentPhase !== COUNTDOWN && workout.currentPhase !== INACTIVE && workout.currentTime === ROUND_CHANGE_WARNING) {
                     workoutActions.sounds.playWarning(1200);
                 }
             },

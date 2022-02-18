@@ -28,7 +28,7 @@ const TimerDisplay = () => {
         return () => {
             clearTimeout(timerId)
         }
-    }, [workout])
+    }, [workout.currentTime, workout.timerActive])
 
     return <div className="column is-12 has-font-8bit">
         <p className="is-size-6 mb-2 has-font-8bit">Round:{workout.currentRound}/{workout.totalRounds === Infinity ? "unlimited" : workout.totalRounds}</p>

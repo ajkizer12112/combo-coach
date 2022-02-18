@@ -8,6 +8,8 @@ export const WORKOUT_STATES = Object.freeze({
 
 export const TIME_VALUES = Object.freeze({
     WARNING_INTERVAL: 60,
+    ROUND_CHANGE_WARNING: 10,
+    MILLISECONDS_IN_ONE_SECOND: 1000
 })
 
 export const TOGGLEABLE_CLASSES = Object.freeze({
