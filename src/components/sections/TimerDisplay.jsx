@@ -18,6 +18,7 @@ const TimerDisplay = () => {
                     roundsCompleted: workout.totalRounds,
                     maneuverTracker: workout.maneuverTracker
                 }
+
                 profileFns.completeWorkout(data)
             }
         }

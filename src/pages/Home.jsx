@@ -16,13 +16,13 @@ import { ModalContext } from '../context/ModalContext'
 
 const Home = () => {
     const { dropdownActions } = useContext(DropdownContext);
-    const { account, authenticationFns } = useContext(AccountContext);
+    const { account, authenticationFns, profileFns } = useContext(AccountContext);
     const { modals, modalActions } = useContext(ModalContext)
     const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
-        authenticationFns.authenticateUser();
+        profileFns.authenticateUser();
         setLoading(false);
     }, []);
 

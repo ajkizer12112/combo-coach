@@ -1,14 +1,7 @@
 import { useState } from 'react';
-import { mainRoot } from '../urls/mainApi';
 import axios from 'axios';
-
-
-const jsonHeader = {
-    headers: {
-        "Content-Type": "application/json",
-    },
-};
-
+import { auth } from '../utils/apiCalls/auth'
+import { profile } from '../utils/apiCalls/profile'
 
 const accountInitialState = {
     isAuthenticated: false,
@@ -19,11 +12,13 @@ const accountInitialState = {
 const profileInitialState = {
     roundsCompleted: 0,
     maneuverTracker: {},
+    completedWorkouts: [],
+    loading: true
 }
 
 const useAccount = () => {
     const [account, setAccount] = useState(accountInitialState);
-
+    const [userStats, setUserStats] = useState(profileInitialState);
 
     const setAuthToken = (token) => {
         if (token) {
@@ -33,18 +28,73 @@ const useAccount = () => {
         }
     };
 
-    const [userStats, setUserStats] = useState(profileInitialState);
+    const profileFns = {
+        saveToken: (token) => {
+            localStorage.setItem("boxing-timer-token", token)
+            profileFns.authenticateUser()
+        },
+
+        authenticateUser: async () => {
+            const token = localStorage.getItem("boxing-timer-token");
+            if (token) {
+                setAuthToken(token);
+                const { data: { data: { username, email, _id } } } = await auth.getUserAccountInfo()
+                setAccount({ ...account, isAuthenticated: true, currentUser: { username, email, _id }, token: token })
+                profileFns.getInfo(_id);
+            }
+        },
+
+        getInfo: async (id) => {
+            try {
+                const info = await profile.getUserProfileInfo(id);
+                console.log(info.data.data)
+
+                if (!info) return await profile.createProfile(id);
+
+                const completedWorkouts = await profileFns.getCompletedWorkoutsForWeek();
+
+
+                setUserStats({
+                    ...userStats,
+                    roundsCompleted: info.data.data.roundsCompleted,
+                    maneuverTracker: info.data.data.maneuverTracker,
+                    completedWorkouts: completedWorkouts.data.data,
+                    loading: false
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        getCompletedWorkoutsForWeek: async () => {
+            try {
+                const date = new Date();
+                const endDate = date.getDay() + 1;
+                const completedWorkouts = await profile.getCompletedWorkouts({ endDate })
+                return completedWorkouts
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        completeWorkout: async (data) => {
+            try {
+                const { roundsCompleted, maneuverTracker } = data
+                const { profileInfo, newWorkout } = await profile.saveCompletedWorkout({ roundsCompleted, maneuverTracker });
+
+                setUserStats({ ...userStats, roundsCompleted: userStats.roundsCompleted + newWorkout.rounds, maneuverTracker: profileInfo.maneuverTracker, completedWorkouts: [...userStats.completedWorkouts, newWorkout] })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
 
     const authenticationFns = {
         login: async (body) => {
             try {
-                const URL = `${mainRoot}/auth/login`;
-                const res = await axios.post(URL, body, jsonHeader);
-                localStorage.setItem("boxing-timer-token", res.data.token)
-                setAuthToken(res.data.token);
-                setAccount({ ...account, isAuthenticated: true, token: res.data.token, currentUser: res.data.user })
-                authenticationFns.getCurrentUser();
-
+                const { data: { token } } = await auth.login(body);
+                profileFns.saveToken(token)
             } catch (error) {
                 console.log({ error });
             }
@@ -52,68 +102,26 @@ const useAccount = () => {
 
         register: async (body) => {
             try {
-                const URL = `${mainRoot}/auth/register`;
-                const res = await axios.post(URL, body, jsonHeader);
-                localStorage.setItem("boxing-timer-token", res.data.token)
-                setAuthToken(res.data.token);
-                setAccount({ ...account, isAuthenticated: true, token: res.data.token, currentUser: res.data.user })
-                authenticationFns.getCurrentUser();
+                const { data: { token } } = await auth.register(body);
+                profileFns.saveToken(token)
             } catch (error) {
                 console.log({ error })
             }
         },
 
-        getCurrentUser: async () => {
-            try {
-                const URL = `${mainRoot}/auth/me`
-                const res = await axios.get(URL);
-                const { username, email, _id } = res.data.data
-                profileFns.getInfo(_id);
-                return { username, email, _id }
-            } catch (error) {
-                console.log(error);
-            }
-        },
 
         logout: () => {
             localStorage.removeItem("boxing-timer-token");
-            setAccount({ ...account, token: null, user: {}, isAuthenticated: false })
+
+            setAccount({
+                ...account,
+                token: null,
+                user: {},
+                isAuthenticated: false
+            })
+
             setUserStats(profileInitialState)
         },
-
-        authenticateUser: async () => {
-            const token = localStorage.getItem("boxing-timer-token");
-            if (token) {
-                setAuthToken(token);
-                const user = await authenticationFns.getCurrentUser();
-                setAccount({ ...account, isAuthenticated: true, currentUser: user, token: token })
-            }
-        }
-    }
-
-    const profileFns = {
-        getInfo: async (id) => {
-            try {
-                const info = await axios.get(`${mainRoot}/profiles/${id}`);
-                if (!info) {
-                    const newProfile = await axios.post(`${mainRoot}/profiles`, { account_id: id }, jsonHeader)
-                    setUserStats({ ...userStats, roundsCompleted: newProfile.data.data.roundsCompleted, maneuverTracker: newProfile.data.data.maneuverTracker })
-                } else {
-                    setUserStats({ ...userStats, roundsCompleted: info.data.data.roundsCompleted, maneuverTracker: info.data.data.maneuverTracker })
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        completeWorkout: async (data) => {
-            try {
-                const { roundsCompleted, maneuverTracker } = data
-                const profile = await axios.put(`${mainRoot}/profiles`, { roundsCompleted, maneuverTracker }, jsonHeader);
-                setUserStats({ ...userStats, roundsCompleted: userStats.roundsCompleted + roundsCompleted, maneuverTracker: profile.data.data.maneuverTracker })
-            } catch (error) {
-                console.log(error);
-            }
-        }
     }
 
     return { account, authenticationFns, profileFns, userStats }

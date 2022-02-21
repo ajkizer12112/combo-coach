@@ -16,7 +16,7 @@ const comboIndex = Math.floor(Math.random() * combos[0].combos.length)
 
 const initialState = {
     currentRound: 1,
-    totalRounds: 1,
+    totalRounds: 2,
     roundTime: 180,
     currentTime: 180,
     restTime: 60,
@@ -30,7 +30,6 @@ const initialState = {
     inProgress: false,
     showCombo: false,
     showFollowup: false,
-    punches: [],
     combo: combos[0].combos[comboIndex],
     followup: combos[0].combos[comboIndex].followups[0],
     combos: combos[0],
@@ -70,6 +69,14 @@ const useWorkout = () => {
     warning.loop = true;
 
     const workoutActions = {
+        triggers: {
+            shouldShowNextCombo: function () {
+                return workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === WORK
+            },
+            shouldHideCombo: function () {
+                return !workout.comboStartTime || workout.comboStartTime - workout.currentTime >= workout.rate - 2
+            }
+        },
         timer: {
             convertToTime: function (time) {
                 const minutes = Math.floor(time / WARNING_INTERVAL)
@@ -84,11 +91,11 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
-                if (workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === WORK) {
+                if (workoutActions.triggers.shouldShowNextCombo()) {
                     return workoutActions.workoutFns.activateNextCombo();
                 }
 
-                if (!workout.comboStartTime || workout.comboStartTime - workout.currentTime >= workout.rate - 2) {
+                if (workoutActions.triggers.shouldHideCombo()) {
                     return workoutActions.workoutFns.hideCombo();
                 }
 
@@ -137,7 +144,6 @@ const useWorkout = () => {
             },
             completeWorkout: function () {
                 workoutActions.sounds.playBell(0.9);
-                console.log(workout.maneuverTracker)
                 setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
             },
             stopWorkout: function () {

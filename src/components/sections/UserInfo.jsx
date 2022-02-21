@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AccountContext } from '../../context/AccountContext';
 import { BarChart, XAxis, YAxis, CartesianGrid, Legend, Bar, Tooltip, ResponsiveContainer } from 'recharts';
 
 const UserInfo = () => {
     const { userStats } = useContext(AccountContext)
 
-    console.log(userStats);
+    if (userStats.loading) return <>loading</>
+
 
     const offensiveKeys = ["1", "2", "3", "4", "5", '6']
 
@@ -25,6 +26,7 @@ const UserInfo = () => {
 
         return { name, body, head }
     })
+
 
     const defenseKeys = ["Slip", "Pull", "Roll", "Duck"]
 
@@ -50,7 +52,7 @@ const UserInfo = () => {
                         bottom: 5,
                     }}
                 >
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="5 5" />
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
@@ -80,6 +82,9 @@ const UserInfo = () => {
                     <Bar dataKey="count" fill="#8884d8" />
 
                 </BarChart>
+            </div>
+            <div className="column is-12">
+                <h3 className="is-size-4">Rounds This Week: {userStats.completedWorkouts.map(item => item.rounds).reduce((a, b) => a + b, 0)} </h3>
             </div>
         </div>
     )
