@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 const initialState = {
     options: false,
-    account: true,
+    account: false,
 }
 
 

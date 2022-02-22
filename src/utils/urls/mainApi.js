@@ -1,4 +1,4 @@
-export const mainRoot = "http://localhost:8001/api/v1"
+export const mainRoot = "https://boxing-timer-expre.herokuapp.com/api/v1"
 
 export const genQueryString = (queryObj) => {
     if (queryObj.length === 0) return ""

@@ -4,7 +4,7 @@ import { WorkoutContext } from '../../context/WorkoutContext';
 
 const TimerDisplay = () => {
     const { workout, workoutActions } = useContext(WorkoutContext)
-    const { profileFns } = useContext(AccountContext)
+    const { profileFns, account } = useContext(AccountContext)
 
     useEffect(() => {
         let timerId;
@@ -13,7 +13,7 @@ const TimerDisplay = () => {
 
         if (workout.currentTime === 0) {
             workoutActions.timer.runZero();
-            if (workout.currentRound === workout.totalRounds) {
+            if (workout.currentRound === workout.totalRounds && account.isAuthenticated) {
                 const data = {
                     roundsCompleted: workout.totalRounds,
                     maneuverTracker: workout.maneuverTracker

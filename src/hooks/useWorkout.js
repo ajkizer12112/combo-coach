@@ -55,28 +55,119 @@ const initialState = {
     followupClass: NONE
 }
 
+const bell = new Audio(bellSound);
+const warning = new Audio(warningSound);
+const powerup = new Audio(powerupSound);
+
+bell.playbackRate = 1.25;
+warning.playbackRate = 5;
+powerup.playbackRate = 2;
+warning.loop = true;
+
+
+const genRandomNumber = (val) => {
+    return Math.random() * val
+}
 
 const useWorkout = () => {
     const [workout, setWorkout] = useState(initialState)
 
-    const bell = new Audio(bellSound);
-    const warning = new Audio(warningSound);
-    const powerup = new Audio(powerupSound);
+    const comboFns = {
+        genCombo: function () {
+            const index = Math.floor(Math.random() * workout.combos.combos.length)
+            return workout.combos.combos[index]
+        },
+        rollForNextCombo: function () {
+            return Math.ceil(genRandomNumber(100));
+        },
+        genFollowup: function (combo) {
+            return combo.followups[Math.floor(genRandomNumber(combo.followups.length))]
+        },
+        updateWithFollowup: function (updatedManeuverTracker, followup) {
+            followup.forEach(item => {
+                updatedManeuverTracker[item] = updatedManeuverTracker[item] + 1;
+            })
+            return updatedManeuverTracker
+        },
+        genUpdatedManeuverTracker: function (combo, followup) {
+            let updatedManeuverTracker = workout.maneuverTracker;
 
-    bell.playbackRate = 1.25;
-    warning.playbackRate = 5;
-    powerup.playbackRate = 2;
-    warning.loop = true;
+            combo.sequence.forEach(item => {
+                if (item === "Pivot") return
+                updatedManeuverTracker[item] = updatedManeuverTracker[item] + 1
+            })
+
+            const roll = comboFns.rollForNextCombo()
+
+            let followupClass = NONE
+            const showFollowup = roll <= workout.followupChance
+
+            if (showFollowup) {
+                followupClass = ACTIVATED
+                updatedManeuverTracker = comboFns.updateWithFollowup(updatedManeuverTracker, followup)
+                setTimeout(() => sounds.playPowerup(), 500)
+            }
+            return { updatedManeuverTracker, showFollowup, followupClass }
+        },
+
+        activateNextCombo: function () {
+            const newCombo = comboFns.genCombo();
+            const followup = comboFns.genFollowup(newCombo)
+            const { updatedManeuverTracker, showFollowup, followupClass } = comboFns.genUpdatedManeuverTracker(newCombo, followup)
+
+            setWorkout({
+                ...workout,
+                currentTime: workout.currentTime - 1,
+                maneuverTracker: updatedManeuverTracker,
+                followupClass: followupClass,
+                showFollowup: showFollowup,
+                followup: followup,
+                combo: newCombo,
+                showCombo: true,
+                comboStartTime: workout.currentTime - 1
+            });
+        },
+        hideCombo: function () {
+            setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: NONE, currentTime: workout.currentTime - 1 })
+        }
+    }
+
+    const sounds = {
+        playWarning: function (time = 800) {
+            warning.play();
+            setTimeout(() => warning.loop = false, time)
+        },
+        playBell: function (rate) {
+            bell.playbackRate = rate;
+            bell.play();
+        },
+        playPowerup: function () {
+            powerup.play()
+        }
+    }
+
+    const triggers = {
+        shouldShowNextCombo: function () {
+            return workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === WORK
+        },
+        shouldHideCombo: function () {
+            return !workout.comboStartTime || workout.comboStartTime - workout.currentTime >= workout.rate - 2
+        },
+        shouldFinishWorkout: function () {
+            return workout.currentRound >= workout.totalRounds && workout.currentPhase !== COUNTDOWN
+        },
+        shouldPlayWorkWarning: function () {
+            return workout.currentTime % WARNING_INTERVAL === 0 && workout.currentPhase === WORK && workout.currentTime !== workout.roundTime
+        },
+        shouldPlayRestWarning: function () {
+            return workout.currentPhase === REST && workout.currentTime % WARNING_INTERVAL === 0 && workout.currentTime !== workout.restTime
+        },
+        shouldPlayRoundChangeWarning: function () {
+            return workout.currentPhase !== COUNTDOWN && workout.currentPhase !== INACTIVE && workout.currentTime === ROUND_CHANGE_WARNING
+        }
+    }
 
     const workoutActions = {
-        triggers: {
-            shouldShowNextCombo: function () {
-                return workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === WORK
-            },
-            shouldHideCombo: function () {
-                return !workout.comboStartTime || workout.comboStartTime - workout.currentTime >= workout.rate - 2
-            }
-        },
         timer: {
             convertToTime: function (time) {
                 const minutes = Math.floor(time / WARNING_INTERVAL)
@@ -91,59 +182,54 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
-                if (workoutActions.triggers.shouldShowNextCombo()) {
-                    return workoutActions.workoutFns.activateNextCombo();
-                }
-
-                if (workoutActions.triggers.shouldHideCombo()) {
-                    return workoutActions.workoutFns.hideCombo();
-                }
+                if (triggers.shouldShowNextCombo()) return comboFns.activateNextCombo();
+                if (triggers.shouldHideCombo()) return comboFns.hideCombo();
 
                 setWorkout({
-                    ...workout, currentTime: workout.currentTime - 1
+                    ...workout,
+                    currentTime: workout.currentTime - 1
                 })
             },
             runZero: function () {
-                if (workout.currentRound >= workout.totalRounds && workout.currentPhase !== COUNTDOWN) workoutActions.workoutFns.completeWorkout();
+                if (triggers.shouldFinishWorkout()) workoutActions.workoutFns.completeWorkout();
                 else if (workout.currentPhase === REST) workoutActions.workoutFns.changeRound();
                 else if (workout.currentPhase === COUNTDOWN) workoutActions.workoutFns.endCountdown();
                 else if (workout.currentPhase === WORK) workoutActions.workoutFns.startRest();
                 else return
             },
             runWarningChecks: function () {
-                if (workout.currentTime % WARNING_INTERVAL === 0)
-
-                    if (workout.currentTime % WARNING_INTERVAL === 0 && workout.currentPhase === WORK && workout.currentTime !== workout.roundTime) {
-                        workoutActions.sounds.playWarning();
-                    }
-
-                if (workout.currentPhase === REST && workout.currentTime % WARNING_INTERVAL === 0 && workout.currentTime !== workout.restTime) {
-                    workoutActions.sounds.playWarning();
+                if (triggers.shouldPlayWorkWarning()) {
+                    sounds.playWarning();
                 }
 
-                if (workout.currentPhase !== COUNTDOWN && workout.currentPhase !== INACTIVE && workout.currentTime === ROUND_CHANGE_WARNING) {
-                    workoutActions.sounds.playWarning(1200);
+                if (triggers.shouldPlayRestWarning()) {
+                    sounds.playWarning();
+                }
+
+                if (triggers.shouldPlayRoundChangeWarning()) {
+                    sounds.playWarning(1200);
                 }
             },
         },
+
         workoutFns: {
             startWorkout: function () {
                 setWorkout({ ...workout, currentPhase: COUNTDOWN, currentRound: 1, currentTime: workout.countDown, isComplete: false, inProgress: true, timerActive: true, });
             },
             endCountdown: function () {
-                workoutActions.sounds.playBell(1.25)
+                sounds.playBell(1.25)
                 setWorkout({ ...workout, currentTime: workout.roundTime, currentPhase: WORK })
             },
             startRest: function () {
-                workoutActions.sounds.playBell(0.9);
+                sounds.playBell(0.9);
                 setWorkout({ ...workout, currentTime: workout.restTime, currentPhase: REST })
             },
             changeRound: function () {
-                workoutActions.sounds.playBell(1.25);
+                sounds.playBell(1.25);
                 setWorkout({ ...workout, currentPhase: WORK, currentTime: workout.roundTime, currentRound: workout.currentRound + 1 })
             },
             completeWorkout: function () {
-                workoutActions.sounds.playBell(0.9);
+                sounds.playBell(0.9);
                 setWorkout({ ...workout, inProgress: false, timerActive: false, isComplete: true })
             },
             stopWorkout: function () {
@@ -161,58 +247,9 @@ const useWorkout = () => {
                     setWorkout({ ...workout, [optionName]: value, timerActive: false, inProgress: false })
                 }
             },
-            genCombo: function () {
-                const index = Math.floor(Math.random() * workout.combos.combos.length)
-                return workout.combos.combos[index]
-            },
-            activateNextCombo: function () {
-                const newCombo = workoutActions.workoutFns.genCombo();
-                const roll = Math.ceil(Math.random() * 100);
-                const followup = newCombo.followups[Math.floor(Math.random() * newCombo.followups.length)]
-                const showFollowup = roll <= workout.followupChance
-
-                let followupClass = NONE
-
-                let newValue = workout.maneuverTracker;
-
-                newCombo.sequence.forEach(item => {
-                    if (item === "Pivot") return
-                    newValue[item] = newValue[item] + 1
-                })
-
-                if (showFollowup) {
-                    followupClass = ACTIVATED
-                    followup.forEach(item => {
-                        newValue[item] = newValue[item] + 1;
-                    })
-                    setTimeout(() => workoutActions.sounds.playPowerup(), 500)
-                }
-
-                let newState = { ...workout, currentTime: workout.currentTime - 1, maneuverTracker: newValue, followupClass: followupClass, showFollowup: showFollowup, followup: followup, combo: newCombo, showCombo: true, comboStartTime: workout.currentTime - 1 };
-
-
-                return setWorkout(newState)
-            },
-            hideCombo: function () {
-                setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: NONE, currentTime: workout.currentTime - 1 })
-            }
         },
-        sounds: {
-            playWarning: function (time = 800) {
-                warning.play();
-                setTimeout(() => warning.loop = false, time)
-            },
-            playBell: function (rate) {
-                bell.playbackRate = rate;
-                bell.play();
-            },
-            playPowerup: function () {
-                powerup.play()
-            }
-        },
+
     }
-
-
 
     return { workout, workoutActions }
 }
