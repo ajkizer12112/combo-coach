@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import { combos } from '../combinations/fundamentals'
 import { genCombo, genUpdatedManeuverTracker, genFollowup } from './helpers/comboSystem'
+import { shouldFinishWorkout, shouldHideCombo, shouldPlayRestWarning, shouldPlayRoundChangeWarning, shouldPlayWorkWarning, shouldShowNextCombo } from './helpers/triggers'
 
 import { WORKOUT_STATES, TIME_VALUES, TOGGLEABLE_CLASSES, OPTIONS_FIELD_NAMES } from "../utils/constants"
 import sounds from './helpers/sounds'
 
 const { INACTIVE, WORK, COUNTDOWN, REST } = WORKOUT_STATES;
 const { WARNING_INTERVAL, ROUND_CHANGE_WARNING } = TIME_VALUES;
-const { NONE, ACTIVATED } = TOGGLEABLE_CLASSES;
+const { NONE } = TOGGLEABLE_CLASSES;
 const { ROUND_TIME, COMBOS } = OPTIONS_FIELD_NAMES;
-
-
 const comboIndex = Math.floor(Math.random() * combos[0].combos.length)
 
 const initialState = {
@@ -91,29 +90,6 @@ const useWorkout = () => {
         }
     }
 
-
-
-    const triggers = {
-        shouldShowNextCombo: function () {
-            return workout.currentTime % workout.rate === 0 && workout.currentTime !== workout.roundTime && workout.currentTime !== 0 && workout.currentPhase === WORK
-        },
-        shouldHideCombo: function () {
-            return !workout.comboStartTime || workout.comboStartTime - workout.currentTime >= workout.rate - 2
-        },
-        shouldFinishWorkout: function () {
-            return workout.currentRound >= workout.totalRounds && workout.currentPhase !== COUNTDOWN
-        },
-        shouldPlayWorkWarning: function () {
-            return workout.currentTime % WARNING_INTERVAL === 0 && workout.currentPhase === WORK && workout.currentTime !== workout.roundTime
-        },
-        shouldPlayRestWarning: function () {
-            return workout.currentPhase === REST && workout.currentTime % WARNING_INTERVAL === 0 && workout.currentTime !== workout.restTime
-        },
-        shouldPlayRoundChangeWarning: function () {
-            return workout.currentPhase !== COUNTDOWN && workout.currentPhase !== INACTIVE && workout.currentTime === ROUND_CHANGE_WARNING
-        }
-    }
-
     const workoutActions = {
         timer: {
             convertToTime: function (time) {
@@ -129,8 +105,8 @@ const useWorkout = () => {
                 setWorkout({ ...workout, timerActive: true })
             },
             decrementTimer: function () {
-                if (triggers.shouldShowNextCombo()) return comboFns.activateNextCombo();
-                if (triggers.shouldHideCombo()) return comboFns.hideCombo();
+                if (shouldShowNextCombo()) return comboFns.activateNextCombo();
+                if (shouldHideCombo()) return comboFns.hideCombo();
 
                 setWorkout({
                     ...workout,
@@ -138,22 +114,22 @@ const useWorkout = () => {
                 })
             },
             runZero: function () {
-                if (triggers.shouldFinishWorkout()) workoutActions.workoutFns.completeWorkout();
+                if (shouldFinishWorkout()) workoutActions.workoutFns.completeWorkout();
                 else if (workout.currentPhase === REST) workoutActions.workoutFns.changeRound();
                 else if (workout.currentPhase === COUNTDOWN) workoutActions.workoutFns.endCountdown();
                 else if (workout.currentPhase === WORK) workoutActions.workoutFns.startRest();
                 else return
             },
             runWarningChecks: function () {
-                if (triggers.shouldPlayWorkWarning()) {
+                if (shouldPlayWorkWarning()) {
                     sounds.playWarning();
                 }
 
-                if (triggers.shouldPlayRestWarning()) {
+                if (shouldPlayRestWarning()) {
                     sounds.playWarning();
                 }
 
-                if (triggers.shouldPlayRoundChangeWarning()) {
+                if (shouldPlayRoundChangeWarning()) {
                     sounds.playWarning(1200);
                 }
             },
