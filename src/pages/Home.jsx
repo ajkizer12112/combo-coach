@@ -16,8 +16,8 @@ import { ModalContext } from '../context/ModalContext'
 
 const Home = () => {
     const { dropdownActions } = useContext(DropdownContext);
-    const { account, authenticationFns, profileFns } = useContext(AccountContext);
-    const { modals, modalActions } = useContext(ModalContext)
+    const { account, profileFns } = useContext(AccountContext);
+    const { modalActions } = useContext(ModalContext)
     const [loading, setLoading] = useState(true);
 
 

@@ -10,12 +10,12 @@ import { DropdownContext } from './DropdownContext';
 import { ModalContext } from './ModalContext'
 
 const ContextProvider = (props) => {
-    const { workout, workoutActions } = useWorkout();
+    const { workout, workoutFns, timer } = useWorkout();
     const { dropdown, dropdownActions } = useDropdown();
     const { account, authenticationFns, profileFns, userStats } = useAccount();
     const { modals, modalActions } = useModal();
 
-    const workoutValue = useMemo(() => ({ workout, workoutActions, profileFns }), [workout, workoutActions, profileFns])
+    const workoutValue = useMemo(() => ({ workout, workoutFns, timer }), [workout, workoutFns, timer])
     const dropdownValue = useMemo(() => ({ dropdown, dropdownActions }), [dropdown, dropdownActions])
     const accountValue = useMemo(() => ({ account, authenticationFns, profileFns, userStats }), [account, authenticationFns, profileFns, userStats])
     const modalValue = useMemo(() => ({ modals, modalActions }), [modals, modalActions])

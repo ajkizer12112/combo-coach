@@ -4,7 +4,7 @@ import { ModalContext } from '../../context/ModalContext';
 
 const Navbar = () => {
     const { account, authenticationFns } = useContext(AccountContext);
-    const { modals, modalActions } = useContext(ModalContext)
+    const { modalActions } = useContext(ModalContext)
 
     return (
         <nav className="navbar has-shadow p-3">

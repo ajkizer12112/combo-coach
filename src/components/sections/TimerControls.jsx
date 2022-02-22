@@ -3,7 +3,7 @@ import { WorkoutContext } from '../../context/WorkoutContext';
 import { ModalContext } from '../../context/ModalContext';
 
 const TimerControls = () => {
-    const { workout, workoutActions: { timer, workoutFns } } = useContext(WorkoutContext)
+    const { workout, workoutFns, timer } = useContext(WorkoutContext)
     const { modalActions } = useContext(ModalContext);
     const workoutActive = workout.inProgress && workout.timerActive;
 

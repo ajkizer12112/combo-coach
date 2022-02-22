@@ -4,7 +4,7 @@ import { DropdownContext } from '../../context/DropdownContext';
 import { DIFFICULTY, OPTIONS_FIELD_NAMES } from '../../utils/constants'
 
 const Dropdown = ({ menuAttr }) => {
-    const { workout, workoutActions: { timer, workoutFns } } = useContext(WorkoutContext);
+    const { workout, timer, workoutFns } = useContext(WorkoutContext);
     const { dropdown, dropdownActions } = useContext(DropdownContext);
     const { title, items, dropdownOption } = menuAttr;
 
