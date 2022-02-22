@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { AccountContext } from '../../context/AccountContext';
-import { BarChart, XAxis, YAxis, CartesianGrid, Legend, Bar, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, XAxis, YAxis, CartesianGrid, Legend, Bar, Tooltip } from 'recharts';
 
 const UserInfo = () => {
     const { userStats } = useContext(AccountContext)

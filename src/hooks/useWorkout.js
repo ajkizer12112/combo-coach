@@ -7,7 +7,7 @@ import { WORKOUT_STATES, TIME_VALUES, TOGGLEABLE_CLASSES, OPTIONS_FIELD_NAMES } 
 import sounds from './helpers/sounds'
 
 const { INACTIVE, WORK, COUNTDOWN, REST } = WORKOUT_STATES;
-const { WARNING_INTERVAL, ROUND_CHANGE_WARNING } = TIME_VALUES;
+const { WARNING_INTERVAL } = TIME_VALUES;
 const { NONE } = TOGGLEABLE_CLASSES;
 const { ROUND_TIME, COMBOS } = OPTIONS_FIELD_NAMES;
 const comboIndex = Math.floor(Math.random() * combos[0].combos.length)

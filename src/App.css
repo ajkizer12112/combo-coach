@@ -75,6 +75,10 @@ main {
     width: 80%;
 }
 
+.hover-pointer:hover {
+    cursor: pointer;
+}
+
 @media screen and (max-width: 700px) {
     .modal-content {
         width: 100%;
