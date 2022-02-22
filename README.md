@@ -20,11 +20,15 @@ The motivation behind this project was to help the creator gain an understanding
 
 ## Installation
 
-Run the command:
+Run the following command to install dependencies:
 ```
 npm -i
 ```
 
+Run the following command to start the app:
+```
+npm start
+```
 App will start on localhost:3000
 </br></br>
 
