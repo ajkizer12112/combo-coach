@@ -1,10 +1,9 @@
 import { useState } from 'react'
-import bellSound from "../utils/sounds/boxing-bell.mp3"
-import warningSound from '../utils/sounds/boxing-hit.wav'
-import powerupSound from '../utils/sounds/powerup.mp3'
 import { combos } from '../combinations/fundamentals'
+import { genCombo, genUpdatedManeuverTracker, genFollowup } from './helpers/comboSystem'
 
 import { WORKOUT_STATES, TIME_VALUES, TOGGLEABLE_CLASSES, OPTIONS_FIELD_NAMES } from "../utils/constants"
+import sounds from './helpers/sounds'
 
 const { INACTIVE, WORK, COUNTDOWN, REST } = WORKOUT_STATES;
 const { WARNING_INTERVAL, ROUND_CHANGE_WARNING } = TIME_VALUES;
@@ -55,65 +54,19 @@ const initialState = {
     followupClass: NONE
 }
 
-const bell = new Audio(bellSound);
-const warning = new Audio(warningSound);
-const powerup = new Audio(powerupSound);
-
-bell.playbackRate = 1.25;
-warning.playbackRate = 5;
-powerup.playbackRate = 2;
-warning.loop = true;
 
 
-const genRandomNumber = (val) => {
-    return Math.random() * val
-}
 
 const useWorkout = () => {
     const [workout, setWorkout] = useState(initialState)
 
     const comboFns = {
-        genCombo: function () {
-            const index = Math.floor(Math.random() * workout.combos.combos.length)
-            return workout.combos.combos[index]
-        },
-        rollForNextCombo: function () {
-            return Math.ceil(genRandomNumber(100));
-        },
-        genFollowup: function (combo) {
-            return combo.followups[Math.floor(genRandomNumber(combo.followups.length))]
-        },
-        updateWithFollowup: function (updatedManeuverTracker, followup) {
-            followup.forEach(item => {
-                updatedManeuverTracker[item] = updatedManeuverTracker[item] + 1;
-            })
-            return updatedManeuverTracker
-        },
-        genUpdatedManeuverTracker: function (combo, followup) {
-            let updatedManeuverTracker = workout.maneuverTracker;
-
-            combo.sequence.forEach(item => {
-                if (item === "Pivot") return
-                updatedManeuverTracker[item] = updatedManeuverTracker[item] + 1
-            })
-
-            const roll = comboFns.rollForNextCombo()
-
-            let followupClass = NONE
-            const showFollowup = roll <= workout.followupChance
-
-            if (showFollowup) {
-                followupClass = ACTIVATED
-                updatedManeuverTracker = comboFns.updateWithFollowup(updatedManeuverTracker, followup)
-                setTimeout(() => sounds.playPowerup(), 500)
-            }
-            return { updatedManeuverTracker, showFollowup, followupClass }
-        },
-
         activateNextCombo: function () {
-            const newCombo = comboFns.genCombo();
-            const followup = comboFns.genFollowup(newCombo)
-            const { updatedManeuverTracker, showFollowup, followupClass } = comboFns.genUpdatedManeuverTracker(newCombo, followup)
+            const newCombo = genCombo(workout);
+            const followup = genFollowup(newCombo)
+
+            const combo = { newCombo, followup }
+            const { updatedManeuverTracker, showFollowup, followupClass } = genUpdatedManeuverTracker(combo, workout)
 
             setWorkout({
                 ...workout,
@@ -128,23 +81,17 @@ const useWorkout = () => {
             });
         },
         hideCombo: function () {
-            setWorkout({ ...workout, showCombo: false, showFollowup: false, followupClass: NONE, currentTime: workout.currentTime - 1 })
+            setWorkout({
+                ...workout,
+                showCombo: false,
+                showFollowup: false,
+                followupClass: NONE,
+                currentTime: workout.currentTime - 1
+            })
         }
     }
 
-    const sounds = {
-        playWarning: function (time = 800) {
-            warning.play();
-            setTimeout(() => warning.loop = false, time)
-        },
-        playBell: function (rate) {
-            bell.playbackRate = rate;
-            bell.play();
-        },
-        playPowerup: function () {
-            powerup.play()
-        }
-    }
+
 
     const triggers = {
         shouldShowNextCombo: function () {
