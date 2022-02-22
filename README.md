@@ -2,22 +2,33 @@
 
 ## About
 
-Combo Coach Boxing is a boxing timer designed to keep the workout engaging by generating combos and randomly-timed follow up sequences.  It can be used when training on either the heavy bag, double-end bag, or shadow-boxing to improve your boxing skills or to have an excellent guided workout.
+Combo Coach Boxing is a boxing timer designed to keep cardiovascular workouts engaging by generating boxing combinations and followups at user-selected rates.  It can be used when training on either the heavy bag, double-end bag, or shadow-boxing to improve your boxing skills or to have an excellent guided workout.
 
 ## Purpose
 
 The motivation behind this project was to help the creator gain an understanding of how to use react hooks to manage state and encapsulate logic, maintaining a cleaner app structure, displaying data in graphs, as well as to solve a small, real-world problem.
 
-## SUMMARY
+</br>
 
-### Dependencies
+## Dependencies
 ```
 "recharts": "^2.1.9",
 "axios": "^0.25.0",
 "react": "^17.0.2",
 ```
+</br></br>
 
-### Global State
+## Installation
+
+Run the command:
+```
+npm -i
+```
+
+App will start on localhost:3000
+</br></br>
+
+## Global State
 
 A context wrapper provides the global state...
 
@@ -54,11 +65,8 @@ function App() {
   );
 }
 ```
-
-
-
-
-#### State Objects
+</br></br>
+### State Objects
 
 <details>
    <summary>account</summary>
@@ -149,8 +157,43 @@ function App() {
 </details>
 
 
+</br></br>
+</br></br>
+## Functionality Overview
 
+### User Auth
 
+```mermaid
+graph TD;
+  USER_NAVIGATES_TO_PAGE-->CHECK_LOCAL_STORAGE_FOR_TOKEN;
+  CHECK_LOCAL_STORAGE_FOR_TOKEN-->TOKEN_EXISTS;
+  TOKEN_EXISTS-->YES;
+  TOKEN_EXISTS-->NO;
+  NO-->USER_IS_GUEST;
+  YES-->LOAD_ACCOUNT_INFO;
+  LOAD_ACCOUNT_INFO-->LOAD_PROFILE_INFO;
+  LOAD_PROFILE_INFO-->NO_PROFILE;
+  LOAD_PROFILE_INFO-->HAS_PROFILE;
+  NO_PROFILE-->CREATE_ONE;
+  HAS_PROFILE-->AUTH_FINISHED;
+  CREATE_ONE-->AUTH_FINISHED;
+```
+
+### User Login/Register
+```mermaid
+graph TD;
+  USER_SIGN_ON-->RECEIVE_SUCCESS_RESPONSE;
+  USER_SIGN_ON-->RECEIVE_FAIL_RESPONSE;
+  RECEIVE_FAIL_RESPONSE-->SHOW_ERROR_ON_UI
+  RECEIVE_SUCCESS_RESPONSE-->SAVE_TOKEN_TO_LOCAL_STORAGE;
+  SAVE_TOKEN_TO_LOCAL_STORAGE-->LOAD_ACCOUNT_INFO;
+  LOAD_ACCOUNT_INFO-->LOAD_PROFILE_INFO;
+  LOAD_PROFILE_INFO-->NO_PROFILE;
+  LOAD_PROFILE_INFO-->HAS_PROFILE;
+  NO_PROFILE-->CREATE_ONE;
+  HAS_PROFILE-->SIGN_IN_FINISHED;
+  CREATE_ONE-->SIGN_IN_FINISHED;
+```
 
 ### Timer functionality overview
 ```mermaid
@@ -162,7 +205,6 @@ graph TD;
     TIMER_NOT_ZERO-->DECREMENT_TIMER;
     TIMER_IS_ZERO-->PHASE_SWITCH;
 ```
-
 
 ### Combo generation overview
 ```mermaid
